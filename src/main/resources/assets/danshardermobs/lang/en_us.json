@@ -1,0 +1,13 @@
+{
+  "itemGroup.danshardermobs": "Example Mod Tab",
+  "block.danshardermobs.example_block": "Example Block",
+  "item.danshardermobs.example_item": "Example Item",
+
+  "danshardermobs.configuration.title": "danshardermobs Configs",
+  "danshardermobs.configuration.section.danshardermobs.common.toml": "danshardermobs Configs",
+  "danshardermobs.configuration.section.danshardermobs.common.toml.title": "danshardermobs Configs",
+  "danshardermobs.configuration.items": "Item List",
+  "danshardermobs.configuration.logDirtBlock": "Log Dirt Block",
+  "danshardermobs.configuration.magicNumberIntroduction": "Magic Number Text",
+  "danshardermobs.configuration.magicNumber": "Magic Number"
+}
