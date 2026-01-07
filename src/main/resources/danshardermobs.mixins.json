@@ -1,10 +1,9 @@
 {
   "required": true,
+  "compatibilityLevel": "JAVA_17",
   "package": "com.danpan1232.danshardermobs.mixin",
-  "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PlayerKillStreak",
-    "ScaleMob"
+    "PlayerKillStreak"
   ],
   "injectors": {
     "defaultRequire": 1

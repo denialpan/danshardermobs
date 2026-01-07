@@ -1,6 +1,5 @@
 package com.danpan1232.danshardermobs.mixin;
 
-
 import com.danpan1232.danshardermobs.danshardermobs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -23,8 +22,7 @@ public abstract class PlayerKillStreak {
             method = "killedEntity",
             at = @At("HEAD")
     )
-    private void onKill(ServerLevel level, LivingEntity entity, CallbackInfoReturnable<Boolean> cir){
-
+    public void onKill(ServerLevel level, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         if (!(entity instanceof Monster)) return;
 
         Player player = (Player)(Object)this;
@@ -32,8 +30,6 @@ public abstract class PlayerKillStreak {
         int kills = data.getInt(KILL_STREAK_TAG);
         danshardermobs.LOGGER.info("kills: {}", kills);
         data.putInt(KILL_STREAK_TAG, kills + 1);
-
-
     }
 
     @Inject(
