@@ -1,6 +1,7 @@
 package com.danpan1232.danshardermobs;
 
 import com.danpan1232.danshardermobs.event.ScaleEvents;
+import com.danpan1232.danshardermobs.util.HostileArmorLoader;
 import com.danpan1232.danshardermobs.util.HostileEffectLoader;
 import com.danpan1232.danshardermobs.util.HostileEntityLoader;
 import net.minecraft.world.entity.Mob;
@@ -43,6 +44,7 @@ public class danshardermobs {
     public void onReload(AddReloadListenerEvent event) {
         event.addListener(new HostileEntityLoader());
         event.addListener(new HostileEffectLoader());
+        event.addListener(new HostileArmorLoader());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

@@ -2,27 +2,30 @@ package com.danpan1232.danshardermobs.util;
 
 import net.minecraft.world.effect.MobEffect;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public final class HostileEffectData {
 
-    private static final Set<MobEffect> EFFECTS = new HashSet<>();
+    private static final Map<MobEffect, HostileEffectConfig> EFFECTS = new HashMap<>();
+    private static HostileEffectConfig DEFAULT = HostileEffectConfig.DEFAULT;
 
     public static void clear() {
         EFFECTS.clear();
+        DEFAULT = HostileEffectConfig.DEFAULT;
     }
 
-    public static void add(MobEffect effect) {
-        EFFECTS.add(effect);
+    public static void setDefault(HostileEffectConfig config) {
+        DEFAULT = config;
     }
 
-    public static boolean isEmpty() {
-        return EFFECTS.isEmpty();
+    public static void put(MobEffect effect, HostileEffectConfig config) {
+        EFFECTS.put(effect, config);
     }
 
-    public static Set<MobEffect> getAll() {
+    public static Map<MobEffect, HostileEffectConfig> getAll() {
         return EFFECTS;
     }
-
 }

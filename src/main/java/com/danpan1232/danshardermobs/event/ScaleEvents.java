@@ -3,8 +3,7 @@ package com.danpan1232.danshardermobs.event;
 import com.danpan1232.danshardermobs.Config;
 import com.danpan1232.danshardermobs.danshardermobs;
 import com.danpan1232.danshardermobs.scale.ScaleFactor;
-import com.danpan1232.danshardermobs.util.HostileEffectData;
-import com.danpan1232.danshardermobs.util.HostileEntityData;
+import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -14,11 +13,15 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -90,24 +93,28 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         float bonusHP = playerLevel * 1.0f;
 
+        // set new health
         AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
         if (maxHealth == null) return;
         maxHealth.setBaseValue(maxHealth.getBaseValue() + bonusHP);
         mob.setHealth(mob.getMaxHealth());
 
-
-        // roll effects based on % of cap, if exists. otherwise base 1%
+        // calculate roll effect chance from player/level cap
         float rollEffectChance = 0.0F;
         if (Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get() == Integer.MAX_VALUE) {
             rollEffectChance += 0.01F;
         } else {
             rollEffectChance = (float) playerLevel / Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
         }
+
+        // roll effects based on % of cap TODO: maybe amplifier??
         danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
-        for (MobEffect effect : HostileEffectData.getAll()) {
-            danshardermobs.LOGGER.info("roll chance: {}, effect: {}", rollEffectChance, effect.getDescriptionId());
+        for (var entry : HostileEffectData.getAll().entrySet()) {
+            MobEffect effect = entry.getKey();
+            HostileEffectConfig hostileEffectConfig = entry.getValue();
             float roll = random.nextFloat();
-            if (roll <= rollEffectChance) {
+            danshardermobs.LOGGER.info("roll chance: {}, effect: {}", rollEffectChance * hostileEffectConfig.baseRollChance(), effect.getDescriptionId());
+            if (roll <= rollEffectChance * hostileEffectConfig.baseRollChance()) {
 
                 mob.addEffect(new MobEffectInstance(
                         BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
@@ -117,6 +124,31 @@ public final class ScaleEvents {
                         true
                 ));
             }
+        }
+
+        // roll armor based on % of cap
+        danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
+        for (var entry : HostileArmorData.getAll().entrySet()) {
+
+            Item item = entry.getKey();
+            HostileArmorConfig hostileArmorConfig = entry.getValue();
+
+            float roll = mob.getRandom().nextFloat();
+            danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * hostileArmorConfig.baseRollChance(), item);
+
+            float chance = rollEffectChance * hostileArmorConfig.baseRollChance();
+            if (roll <= chance) {
+                ArmorItem armor = (ArmorItem) item;
+                EquipmentSlot slot = armor.getEquipmentSlot();
+                ItemStack current = mob.getItemBySlot(slot);
+
+                // replace if better tier is rolled
+                int currentTier = current.isEmpty() ? 0 : HostileArmorData.get(current.getItem()).tier();
+                if (!current.isEmpty() && currentTier >= hostileArmorConfig.tier()) continue;
+
+                mob.setItemSlot(slot, new ItemStack(item));
+            }
+
         }
 
         var mobData = mob.getPersistentData();

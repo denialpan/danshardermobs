@@ -1,7 +1,6 @@
 package com.danpan1232.danshardermobs.util;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -9,15 +8,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.util.Map;
 
-public class HostileEffectLoader extends SimpleJsonResourceReloadListener {
+public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
 
     private static final Gson GSON = new Gson();
 
-    public HostileEffectLoader() {
+    public HostileArmorLoader() {
         super(GSON, "danshardermobs");
     }
 
@@ -27,47 +28,50 @@ public class HostileEffectLoader extends SimpleJsonResourceReloadListener {
             ResourceManager resourceManager,
             ProfilerFiller profiler
     ) {
-        HostileEffectData.clear();
+        HostileArmorData.clear();
 
         for (JsonElement element : objects.values()) {
             JsonObject root = element.getAsJsonObject();
-            JsonObject effects = root.getAsJsonObject("effects");
-            if (effects == null) continue;
+            JsonObject armor = root.getAsJsonObject("armor");
+            if (armor == null) continue;
 
-            HostileEffectConfig defaultConfig = HostileEffectConfig.DEFAULT;
+            HostileArmorConfig defaultConfig = HostileArmorConfig.DEFAULT;
 
-            if (effects.has("default")) {
+            if (armor.has("default")) {
                 defaultConfig = parseConfig(
-                        effects.getAsJsonObject("default"),
-                        HostileEffectConfig.DEFAULT
+                        armor.getAsJsonObject("default"),
+                        HostileArmorConfig.DEFAULT
                 );
             }
 
-            HostileEffectData.setDefault(defaultConfig);
+            HostileArmorData.setDefault(defaultConfig);
 
-            for (var entry : effects.entrySet()) {
+            for (var entry : armor.entrySet()) {
                 String key = entry.getKey();
                 if (key.equals("default")) continue;
 
                 ResourceLocation id = ResourceLocation.tryParse(key);
                 if (id == null) continue;
 
-                MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
-                if (effect == null) continue;
+                Item item = BuiltInRegistries.ITEM.get(id);
+                if (item == Items.AIR) continue;
+
+                if (!(item instanceof ArmorItem)) continue;
 
                 JsonObject obj = entry.getValue().getAsJsonObject();
 
-                HostileEffectConfig config =
+                HostileArmorConfig config =
                         parseConfig(obj, defaultConfig);
 
-                HostileEffectData.put(effect, config);
+                HostileArmorData.put(item, config);
             }
         }
     }
 
-    private static HostileEffectConfig parseConfig(JsonObject obj, HostileEffectConfig base) {
-        return new HostileEffectConfig(
-                obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : base.baseRollChance()
+    private static HostileArmorConfig parseConfig(JsonObject obj, HostileArmorConfig base) {
+        return new HostileArmorConfig(
+                obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : base.baseRollChance(),
+                obj.has("tier") ? obj.get("tier").getAsInt() : base.tier()
         );
     }
 }

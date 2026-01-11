@@ -1,16 +1,34 @@
 {
-  "effects": [
-    "minecraft:speed",
-    "minecraft:haste",
-    "minecraft:strength",
-    "minecraft:jump_boost",
-    "minecraft:regeneration",
-    "minecraft:resistance",
-    "minecraft:fire_resistance",
-    "minecraft:water_breathing",
-    "minecraft:health_boost",
-    "minecraft:absorption",
-    "minecraft:slow_falling",
-    "minecraft:conduit_power"
-  ]
+  "effects": {
+
+    "default": {
+      "base_roll_chance": 1
+    },
+
+    "minecraft:slow_falling": {
+      "base_roll_chance": 0.1
+    },
+    "minecraft:speed": {
+    },
+    "minecraft:haste": {
+    },
+    "minecraft:strength": {
+    },
+    "minecraft:jump_boost": {
+    },
+    "minecraft:regeneration": {
+    },
+    "minecraft:resistance": {
+    },
+    "minecraft:fire_resistance": {
+    },
+    "minecraft:water_breathing": {
+    },
+    "minecraft:health_boost": {
+    },
+    "minecraft:absorption": {
+    },
+    "minecraft:conduit_power": {
+    }
+  }
 }

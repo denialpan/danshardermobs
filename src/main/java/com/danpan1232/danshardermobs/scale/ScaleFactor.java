@@ -2,10 +2,7 @@ package com.danpan1232.danshardermobs.scale;
 
 import com.danpan1232.danshardermobs.Config;
 import com.danpan1232.danshardermobs.danshardermobs;
-import com.danpan1232.danshardermobs.util.EvaluatePlayerLevel;
-import com.danpan1232.danshardermobs.util.HostileEffectData;
-import com.danpan1232.danshardermobs.util.HostileEntityConfig;
-import com.danpan1232.danshardermobs.util.HostileEntityData;
+import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -139,7 +136,9 @@ public final class ScaleFactor {
     }
 
     public static void refreshMobEffects(Mob mob) {
-        for (MobEffect effect : HostileEffectData.getAll()) {
+        for (var entry : HostileEffectData.getAll().entrySet()) {
+
+            MobEffect effect = entry.getKey();
             MobEffectInstance current = mob.getEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect));
 
             if (current != null && current.getDuration() <= 60) {
