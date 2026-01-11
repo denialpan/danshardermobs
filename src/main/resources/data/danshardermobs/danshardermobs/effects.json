@@ -1,0 +1,16 @@
+{
+  "effects": [
+    "minecraft:speed",
+    "minecraft:haste",
+    "minecraft:strength",
+    "minecraft:jump_boost",
+    "minecraft:regeneration",
+    "minecraft:resistance",
+    "minecraft:fire_resistance",
+    "minecraft:water_breathing",
+    "minecraft:health_boost",
+    "minecraft:absorption",
+    "minecraft:slow_falling",
+    "minecraft:conduit_power"
+  ]
+}

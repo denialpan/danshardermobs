@@ -3,7 +3,6 @@
   "package": "com.danpan1232.danshardermobs.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PlayerKillStreak",
     "ScaleMob"
   ],
   "injectors": {
