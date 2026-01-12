@@ -93,9 +93,10 @@ public final class EvaluatePlayerLevel {
 
             double percent = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS.get();
             combatData.getInt("level");
-            int loss = (int) (percent * combatData.getInt("level"));
+            int loss = (int) (percent * combatData.getInt("level")) * Math.abs(delta);
             danshardermobs.LOGGER.info("delta: {}, loss: {}", delta, -loss);
             return -loss;
+
         }
 
         return delta;

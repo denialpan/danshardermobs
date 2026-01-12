@@ -76,7 +76,6 @@ public final class ScaleFactor {
         combatData.putInt(TAG_LEVEL, minimumAllowedLevel);
         danshardermobs.LOGGER.info("player death and combat reset: {}, decreased level to: {}", player, minimumAllowedLevel);
 
-
     }
 
     public static void recordMobDeath(Player player, Mob mob) {

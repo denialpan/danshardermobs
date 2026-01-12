@@ -27,7 +27,7 @@ public class Config {
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_LEVEL_CAP = BUILDER
             .comment("Maximum level a player can attain.")
-            .defineInRange("playerLevelCap", 200, 5, Integer.MAX_VALUE);
+            .defineInRange("playerLevelCap", 100, 5, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_SCALE_RANGE = BUILDER
             .comment("Range of levels that a player can gain/lose.\n" +
@@ -74,25 +74,25 @@ public class Config {
             .comment("Z bias towards leveling up.\n" +
                     "\n0: no bias, equal chance to gain/lose levels" +
                     "\nHigher: more bias to level up")
-            .defineInRange("playerZBias", 0.5, 0.0, 2);
+            .defineInRange("playerZBias", 0.35, 0.0, 2);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_DEADZONE = BUILDER
             .comment("Detection of player scaling slowing down.\n" +
                     "\nLower: harder to detect stagnation" +
                     "\nHigher: easier to detect stagnation")
-            .defineInRange("playerZDeadzone", 0.3, 0.01, 3);
+            .defineInRange("playerZDeadzone", 0.15, 0.01, 3);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_EWMA_FACTOR = BUILDER
             .comment("Number of samples (kills) to account for in scaling.\n" +
                     "\nLower = abrupt changes in scaling" +
                     "\nHigher = smoother changes in scaling")
-            .defineInRange("playerEWMA", 20, 5, 50);
+            .defineInRange("playerEWMA", 7, 5, 50);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_CURVE_EXPONENT = BUILDER
             .comment("Difficulty scaling based on deviation from averaged performance.\n" +
                     "\nLower: react strongly" +
                     "\nHigher: react weaker")
-            .defineInRange("playerZCurveExponent", 1, 0.1, 2);
+            .defineInRange("playerZCurveExponent", 0.85, 0.1, 2);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_VARIANCE_FLOOR = BUILDER
             .comment("Reaction to player performance.\n" +
