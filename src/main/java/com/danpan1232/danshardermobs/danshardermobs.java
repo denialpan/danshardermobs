@@ -1,9 +1,7 @@
 package com.danpan1232.danshardermobs;
 
 import com.danpan1232.danshardermobs.event.ScaleEvents;
-import com.danpan1232.danshardermobs.util.HostileArmorLoader;
-import com.danpan1232.danshardermobs.util.HostileEffectLoader;
-import com.danpan1232.danshardermobs.util.HostileEntityLoader;
+import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.world.entity.Mob;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -45,6 +43,8 @@ public class danshardermobs {
         event.addListener(new HostileEntityLoader());
         event.addListener(new HostileEffectLoader());
         event.addListener(new HostileArmorLoader());
+        event.addListener(new HostileWeaponLoader());
+        event.addListener(new HostileEnchantmentLoader());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

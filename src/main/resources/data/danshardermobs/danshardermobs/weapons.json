@@ -1,0 +1,38 @@
+{
+  "weapons": {
+    "default": {
+      "disabled": false,
+      "base_roll_chance": 0.5,
+      "enchantable": true,
+      "ignore_enchantment_compatibility": false,
+      "tier": 1
+    },
+
+    "minecraft:wooden_sword": {
+      "variants": [
+
+        {
+          "tier": 1,
+          "base_roll_chance": 0.9
+        },
+        {
+          "tier": 100,
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "ignore_enchantment_compatibility": true
+        }
+
+      ]
+    },
+
+    "minecraft:diamond_sword": {
+      "variants": [
+        {
+          "tier": 999,
+          "base_roll_chance": 1
+        }
+      ]
+
+    }
+  }
+}

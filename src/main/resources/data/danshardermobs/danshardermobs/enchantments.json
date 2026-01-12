@@ -1,0 +1,11 @@
+{
+  "enchantments": {
+    "default": {
+      "disabled": false,
+      "base_roll_chance": 0.5
+    },
+    "minecraft:sharpness": {
+      "base_roll_chance": 1
+    }
+  }
+}

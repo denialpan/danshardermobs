@@ -21,6 +21,14 @@ public class Config {
             .comment("Whether to give mobs effects.")
             .define("mobEffects", true);
 
+    public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_WEAPONS = BUILDER
+            .comment("Whether to give mobs weapons.")
+            .define("mobWeapons", true);
+
+    public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_ENCHANTMENTS = BUILDER
+            .comment("Whether to give enchantments to mob equipment.")
+            .define("mobEnchantments", true);
+
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP = BUILDER
             .comment("Whether to always level up on boss kills.")
             .define("mobBossAlwaysLevelUp", true);

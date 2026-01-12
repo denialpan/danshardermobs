@@ -6,12 +6,14 @@ import com.danpan1232.danshardermobs.scale.ScaleFactor;
 import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -22,15 +24,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-
-import java.util.Random;
 
 import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
 
@@ -129,6 +129,91 @@ public final class ScaleEvents {
                             false,
                             true
                     ));
+                }
+            }
+        }
+
+        if (Config.DANSHARDERMOBS_MOB_WEAPONS.get()) {
+
+            ItemStack current = mob.getMainHandItem();
+            int currentTier = HostileWeaponData.getTier(current);
+
+            danshardermobs.LOGGER.info("ITEM LOADED");
+
+            HostileWeaponVariantConfig chosenVariant = null;
+            Item chosenItem = null;
+
+            for (var entry : HostileWeaponData.getAll().entrySet()) {
+                Item item = entry.getKey();
+                HostileWeaponStackConfig weaponConfig = entry.getValue();
+
+                danshardermobs.LOGGER.info("ITEM LOADED");
+
+
+                for (HostileWeaponVariantConfig variant : weaponConfig.variants()) {
+                    if (variant.disabled()) continue;
+
+                    float roll = random.nextFloat();
+                    float chance = rollEffectChance * variant.baseRollChance();
+
+                    danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * variant.baseRollChance(), item);
+
+                    if (roll <= chance) {
+
+                        if (variant.tier() <= currentTier) continue;
+                        if (chosenVariant == null || variant.tier() > chosenVariant.tier()) {
+                            chosenVariant = variant;
+                            chosenItem = item;
+                        }
+
+                        if (chosenItem != null && chosenVariant != null) {
+
+                            ItemStack stack = new ItemStack(chosenItem);
+
+                            mob.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
+                            mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
+                            mob.setGuaranteedDrop(EquipmentSlot.MAINHAND);
+
+                            danshardermobs.LOGGER.info("equipped mob {} with tier {} weapon {}", mob.getType().toShortString(), chosenVariant.tier(), BuiltInRegistries.ITEM.getKey(chosenItem));
+
+                            // enchantable, roll enchants
+                            if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
+
+                                var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+                                for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
+
+                                    ResourceLocation enchId = entryEnchantment.getKey();
+                                    HostileEnchantmentConfig cfg = entryEnchantment.getValue();
+
+                                    if (cfg.disabled()) continue;
+
+                                    var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
+                                    var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
+
+                                    if (enchantmentOpt.isEmpty()) continue;
+                                    Holder<Enchantment> enchantment = enchantmentOpt.get();
+
+                                    // TODO: enchantment compatibility check
+
+                                    float rollEnchantment = random.nextFloat();
+                                    float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+
+                                    if (rollEnchantment <= chanceEnchantment) {
+                                        int levelEnchantment = Mth.nextInt(
+                                                random,
+                                                enchantment.value().getMinLevel(),
+                                                enchantment.value().getMaxLevel()
+                                        );
+
+                                        stack.enchant(enchantment, 100);
+
+                                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(chosenItem));
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
