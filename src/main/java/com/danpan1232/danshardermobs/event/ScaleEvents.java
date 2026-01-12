@@ -93,13 +93,18 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         float bonusHP = playerLevel * 1.0f;
 
-        // set new health
-        AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
-        if (maxHealth == null) return;
-        maxHealth.setBaseValue(maxHealth.getBaseValue() + bonusHP);
-        mob.setHealth(mob.getMaxHealth());
 
-        // calculate roll effect chance from player/level cap
+        // set new health
+        if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
+
+            AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
+            if (maxHealth == null) return;
+            maxHealth.setBaseValue(maxHealth.getBaseValue() + bonusHP);
+            mob.setHealth(mob.getMaxHealth());
+
+        }
+
+        // calculate roll effect chance from player % of level cap
         float rollEffectChance = 0.0F;
         if (Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get() == Integer.MAX_VALUE) {
             rollEffectChance += 0.01F;
@@ -107,50 +112,55 @@ public final class ScaleEvents {
             rollEffectChance = (float) playerLevel / Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
         }
 
-        // roll effects based on % of cap TODO: maybe amplifier??
-        danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
-        for (var entry : HostileEffectData.getAll().entrySet()) {
-            MobEffect effect = entry.getKey();
-            HostileEffectConfig hostileEffectConfig = entry.getValue();
-            float roll = random.nextFloat();
-            danshardermobs.LOGGER.info("roll chance: {}, effect: {}", rollEffectChance * hostileEffectConfig.baseRollChance(), effect.getDescriptionId());
-            if (roll <= rollEffectChance * hostileEffectConfig.baseRollChance()) {
+        if (Config.DANSHARDERMOBS_MOB_ARMOR.get()) {
+            // roll effects based on % of cap TODO: maybe amplifier??
+            danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
+            for (var entry : HostileEffectData.getAll().entrySet()) {
+                MobEffect effect = entry.getKey();
+                HostileEffectConfig hostileEffectConfig = entry.getValue();
+                float roll = random.nextFloat();
+                danshardermobs.LOGGER.info("roll chance: {}, effect: {}", rollEffectChance * hostileEffectConfig.baseRollChance(), effect.getDescriptionId());
+                if (roll <= rollEffectChance * hostileEffectConfig.baseRollChance()) {
 
-                mob.addEffect(new MobEffectInstance(
-                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
-                        200,
-                        0,
-                        false,
-                        true
-                ));
+                    mob.addEffect(new MobEffectInstance(
+                            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
+                            200,
+                            0,
+                            false,
+                            true
+                    ));
+                }
             }
         }
 
-        // roll armor based on % of cap
-        danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
-        for (var entry : HostileArmorData.getAll().entrySet()) {
+        if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
+            // roll armor based on % of cap
+            danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
+            for (var entry : HostileArmorData.getAll().entrySet()) {
 
-            Item item = entry.getKey();
-            HostileArmorConfig hostileArmorConfig = entry.getValue();
+                Item item = entry.getKey();
+                HostileArmorConfig hostileArmorConfig = entry.getValue();
 
-            float roll = mob.getRandom().nextFloat();
-            danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * hostileArmorConfig.baseRollChance(), item);
+                float roll = mob.getRandom().nextFloat();
+                danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * hostileArmorConfig.baseRollChance(), item);
 
-            float chance = rollEffectChance * hostileArmorConfig.baseRollChance();
-            if (roll <= chance) {
-                ArmorItem armor = (ArmorItem) item;
-                EquipmentSlot slot = armor.getEquipmentSlot();
-                ItemStack current = mob.getItemBySlot(slot);
+                float chance = rollEffectChance * hostileArmorConfig.baseRollChance();
+                if (roll <= chance) {
+                    ArmorItem armor = (ArmorItem) item;
+                    EquipmentSlot slot = armor.getEquipmentSlot();
+                    ItemStack current = mob.getItemBySlot(slot);
 
-                // replace if better tier is rolled
-                int currentTier = current.isEmpty() ? 0 : HostileArmorData.get(current.getItem()).tier();
-                if (!current.isEmpty() && currentTier >= hostileArmorConfig.tier()) continue;
+                    // replace if better tier is rolled
+                    int currentTier = current.isEmpty() ? 0 : HostileArmorData.get(current.getItem()).tier();
+                    if (!current.isEmpty() && currentTier >= hostileArmorConfig.tier()) continue;
 
-                mob.setItemSlot(slot, new ItemStack(item));
+                    mob.setItemSlot(slot, new ItemStack(item));
+                }
+
             }
-
         }
 
+        // mark that mob has been modified by this mod
         var mobData = mob.getPersistentData();
         mobData.putBoolean("danshardermobs", true);
         mobData.putInt("level", playerLevel);
