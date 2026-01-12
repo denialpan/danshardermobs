@@ -2,6 +2,7 @@
   "entities": {
 
     "default": {
+      "disabled": false,
       "base_level": 1,
       "scaling_multiplier": 1.0,
       "scaling_flag_max_gain": 50,

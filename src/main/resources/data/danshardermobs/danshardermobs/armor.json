@@ -2,6 +2,7 @@
   "armor": {
 
     "default": {
+      "disabled": false,
       "base_roll_chance": 0.5,
       "tier": 1
     },

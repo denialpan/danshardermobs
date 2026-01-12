@@ -13,7 +13,7 @@ import java.util.Set;
 public final class HostileEntityData {
 
     private static final Map<ResourceLocation, HostileEntityConfig> ENTITY_CONFIGS = new HashMap<>();
-    private static HostileEntityConfig DEFAULT = new HostileEntityConfig(1, 1.0f, 50, -1, 1.0F, false);
+    private static HostileEntityConfig DEFAULT = HostileEntityConfig.DEFAULT;
 
     public static void clear() {
         ENTITY_CONFIGS.clear();

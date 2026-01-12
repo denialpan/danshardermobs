@@ -70,6 +70,7 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
 
     private static HostileArmorConfig parseConfig(JsonObject obj, HostileArmorConfig base) {
         return new HostileArmorConfig(
+                obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
                 obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : base.baseRollChance(),
                 obj.has("tier") ? obj.get("tier").getAsInt() : base.tier()
         );

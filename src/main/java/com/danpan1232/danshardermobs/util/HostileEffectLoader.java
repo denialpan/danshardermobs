@@ -67,6 +67,7 @@ public class HostileEffectLoader extends SimpleJsonResourceReloadListener {
 
     private static HostileEffectConfig parseConfig(JsonObject obj, HostileEffectConfig base) {
         return new HostileEffectConfig(
+                obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
                 obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : base.baseRollChance()
         );
     }
