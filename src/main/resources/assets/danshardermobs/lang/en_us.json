@@ -10,6 +10,8 @@
   "danshardermobs.configuration.mobScaleHealth": "Enable mob health scaling",
   "danshardermobs.configuration.mobArmor": "Enable mob armor",
   "danshardermobs.configuration.mobEffects": "Enable mob effects",
+  "danshardermobs.configuration.mobWeapons": "Enable mob weapons",
+  "danshardermobs.configuration.mobEnchantments": "Enable mob enchantments",
   "danshardermobs.configuration.mobBossAlwaysLevelUp": "Enable always level up boss kill",
 
   "danshardermobs.configuration.playerLevelCap": "Player level cap",
