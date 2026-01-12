@@ -6,6 +6,9 @@
     },
     "minecraft:sharpness": {
       "base_roll_chance": 1
+    },
+    "minecraft:protection": {
+      "base_roll_chance": 1
     }
   }
 }

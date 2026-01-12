@@ -112,7 +112,7 @@ public final class ScaleEvents {
             rollEffectChance = (float) playerLevel / Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
         }
 
-        if (Config.DANSHARDERMOBS_MOB_ARMOR.get()) {
+        if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
             // roll effects based on % of cap TODO: maybe amplifier??
             danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
             for (var entry : HostileEffectData.getAll().entrySet()) {
@@ -218,30 +218,102 @@ public final class ScaleEvents {
             }
         }
 
-        if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
+        if (Config.DANSHARDERMOBS_MOB_ARMOR.get()) {
             // roll armor based on % of cap
-            danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
+
+            Item chosenItem = null;
+
             for (var entry : HostileArmorData.getAll().entrySet()) {
 
                 Item item = entry.getKey();
-                HostileArmorConfig hostileArmorConfig = entry.getValue();
+                HostileArmorStackConfig stackConfig = entry.getValue();
 
-                float roll = mob.getRandom().nextFloat();
-                danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * hostileArmorConfig.baseRollChance(), item);
+                if (!(item instanceof ArmorItem armorItem)) continue;
 
-                float chance = rollEffectChance * hostileArmorConfig.baseRollChance();
-                if (roll <= chance) {
-                    ArmorItem armor = (ArmorItem) item;
-                    EquipmentSlot slot = armor.getEquipmentSlot();
-                    ItemStack current = mob.getItemBySlot(slot);
+                EquipmentSlot slot = armorItem.getEquipmentSlot();
 
-                    // replace if better tier is rolled
-                    int currentTier = current.isEmpty() ? 0 : HostileArmorData.get(current.getItem()).tier();
-                    if (!current.isEmpty() && currentTier >= hostileArmorConfig.tier()) continue;
+                // --- current armor state ---
+                ItemStack currentStack = mob.getItemBySlot(slot);
+                int currentTier = HostileArmorData.getTier(currentStack);
 
-                    mob.setItemSlot(slot, new ItemStack(item));
+                HostileArmorVariantConfig chosenVariant = null;
+
+                // --- roll variants ---
+                for (HostileArmorVariantConfig variant : stackConfig.variants()) {
+
+                    if (variant.disabled()) continue;
+
+                    float roll = random.nextFloat();
+                    float chance = rollEffectChance * variant.baseRollChance();
+
+                    if (roll > chance) continue;
+
+                    // Tier gate: only replace if better
+                    if (variant.tier() <= currentTier) continue;
+
+                    // Prefer highest-tier variant
+                    if (chosenVariant == null || variant.tier() > chosenVariant.tier()) {
+                        chosenVariant = variant;
+                        chosenItem = item;
+                    }
                 }
 
+                // --- apply result ---
+                if (chosenItem != null && chosenVariant != null) {
+
+                    ItemStack newStack = new ItemStack(item);
+
+                    mob.setItemSlot(slot, newStack);
+
+                    // Optional: prevent vanilla drop randomness
+                    mob.setDropChance(slot, 0.0f);
+
+                    danshardermobs.LOGGER.info(
+                            "Equipped {} with armor {} tier {} in slot {}",
+                            mob.getType().toShortString(),
+                            BuiltInRegistries.ITEM.getKey(item),
+                            chosenVariant.tier(),
+                            slot
+                    );
+
+                    // enchantable, roll enchants
+                    if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
+
+                        var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+                        for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
+
+                            ResourceLocation enchId = entryEnchantment.getKey();
+                            HostileEnchantmentConfig cfg = entryEnchantment.getValue();
+
+                            if (cfg.disabled()) continue;
+
+                            var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
+                            var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
+
+                            if (enchantmentOpt.isEmpty()) continue;
+                            Holder<Enchantment> enchantment = enchantmentOpt.get();
+
+                            // TODO: enchantment compatibility check
+                            // TODO: put enchantment roll in separate function
+
+                            float rollEnchantment = random.nextFloat();
+                            float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+
+                            if (rollEnchantment <= chanceEnchantment) {
+                                int levelEnchantment = Mth.nextInt(
+                                        random,
+                                        enchantment.value().getMinLevel(),
+                                        enchantment.value().getMaxLevel()
+                                );
+
+                                newStack.enchant(enchantment, 100);
+
+                                danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(chosenItem));
+                            }
+                        }
+                    }
+                }
             }
         }
 

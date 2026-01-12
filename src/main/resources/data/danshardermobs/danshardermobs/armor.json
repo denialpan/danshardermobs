@@ -4,12 +4,23 @@
     "default": {
       "disabled": false,
       "base_roll_chance": 0.5,
+      "enchantable": true,
       "tier": 1
     },
 
     "minecraft:leather_helmet": {
-      "base_roll_chance": 0.5,
-      "tier": 1
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
     "minecraft:leather_chestplate": {
       "tier": 1
