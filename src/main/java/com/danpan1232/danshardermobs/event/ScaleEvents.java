@@ -5,8 +5,10 @@ import com.danpan1232.danshardermobs.danshardermobs;
 import com.danpan1232.danshardermobs.scale.ScaleFactor;
 import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -32,9 +35,13 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
+import java.util.Set;
+
 import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
 
 public final class ScaleEvents {
+
+    public static final String TAG_TIER = "tier";
 
     @SubscribeEvent
     public void onMobDamaged(LivingDamageEvent.Post event) {
@@ -114,7 +121,6 @@ public final class ScaleEvents {
 
         if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
             // roll effects based on % of cap TODO: maybe amplifier??
-            danshardermobs.LOGGER.info("roll chance: {}", rollEffectChance);
             for (var entry : HostileEffectData.getAll().entrySet()) {
                 MobEffect effect = entry.getKey();
                 HostileEffectConfig hostileEffectConfig = entry.getValue();
@@ -136,9 +142,6 @@ public final class ScaleEvents {
         if (Config.DANSHARDERMOBS_MOB_WEAPONS.get()) {
 
             ItemStack current = mob.getMainHandItem();
-            int currentTier = HostileWeaponData.getTier(current);
-
-            danshardermobs.LOGGER.info("ITEM LOADED");
 
             HostileWeaponVariantConfig chosenVariant = null;
             Item chosenItem = null;
@@ -147,20 +150,19 @@ public final class ScaleEvents {
                 Item item = entry.getKey();
                 HostileWeaponStackConfig weaponConfig = entry.getValue();
 
-                danshardermobs.LOGGER.info("ITEM LOADED");
-
-
                 for (HostileWeaponVariantConfig variant : weaponConfig.variants()) {
                     if (variant.disabled()) continue;
+
+                    int minimumLevel = variant.mobMinLevel() == -1 ? -1 : variant.mobMinLevel();
+                    int maximumlevel = variant.mobMaxLevel() == -1 ? Integer.MAX_VALUE : variant.mobMaxLevel();
+                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
 
                     float roll = random.nextFloat();
                     float chance = rollEffectChance * variant.baseRollChance();
 
-                    danshardermobs.LOGGER.info("roll chance: {}, item: {}", rollEffectChance * variant.baseRollChance(), item);
 
                     if (roll <= chance) {
 
-                        if (variant.tier() <= currentTier) continue;
                         if (chosenVariant == null || variant.tier() > chosenVariant.tier()) {
                             chosenVariant = variant;
                             chosenItem = item;
@@ -174,11 +176,13 @@ public final class ScaleEvents {
                             mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
                             mob.setGuaranteedDrop(EquipmentSlot.MAINHAND);
 
+
                             danshardermobs.LOGGER.info("equipped mob {} with tier {} weapon {}", mob.getType().toShortString(), chosenVariant.tier(), BuiltInRegistries.ITEM.getKey(chosenItem));
 
                             // enchantable, roll enchants
                             if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-                                rollEnchantments(mob, chosenItem, stack, random, rollEffectChance);
+                                danshardermobs.LOGGER.info("variant enchantment levels min: {} max: {}", chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel());
+                                rollEnchantments(mob, chosenItem, stack, chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel(), chosenVariant.blacklistEnchantments(), random, rollEffectChance);
                             }
                         }
                     }
@@ -200,21 +204,19 @@ public final class ScaleEvents {
 
                 EquipmentSlot slot = armorItem.getEquipmentSlot();
 
-                ItemStack currentStack = mob.getItemBySlot(slot);
-                int currentTier = HostileArmorData.getTier(currentStack);
-
                 HostileArmorVariantConfig chosenVariant = null;
 
                 for (HostileArmorVariantConfig variant : stackConfig.variants()) {
 
                     if (variant.disabled()) continue;
+                    int minimumLevel = variant.mobMinLevel() == -1 ? -1 : variant.mobMinLevel();
+                    int maximumlevel = variant.mobMaxLevel() == -1 ? Integer.MAX_VALUE : variant.mobMaxLevel();
+                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
 
                     float roll = random.nextFloat();
                     float chance = rollEffectChance * variant.baseRollChance();
 
                     if (roll > chance) continue;
-
-                    if (variant.tier() <= currentTier) continue;
 
                     if (chosenVariant == null || variant.tier() > chosenVariant.tier()) {
                         chosenVariant = variant;
@@ -240,7 +242,8 @@ public final class ScaleEvents {
 
                     // enchantable, roll enchants
                     if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-                        rollEnchantments(mob, chosenItem, newStack, random, rollEffectChance);
+                        danshardermobs.LOGGER.info("variant enchantment levels min: {} max: {}", chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel());
+                        rollEnchantments(mob, chosenItem, newStack, chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel(), chosenVariant.blacklistEnchantments(), random, rollEffectChance);
                     }
                 }
             }
@@ -254,23 +257,31 @@ public final class ScaleEvents {
         danshardermobs.LOGGER.info("spawned hostile mob with: {}hp", mob.getMaxHealth());
     }
 
-    private void rollEnchantments(Mob mob, Item item, ItemStack stack, RandomSource random, float rollEffectChance) {
+    private void rollEnchantments(Mob mob, Item item, ItemStack stack, int minEnchantmentLevel, int maxEnchantmentLevel, Set<ResourceKey<Enchantment>> blacklistEnchantments, RandomSource random, float rollEffectChance) {
 
         var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+
 
         for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
 
             ResourceLocation enchId = entryEnchantment.getKey();
-            HostileEnchantmentConfig cfg = entryEnchantment.getValue();
+            HostileEnchantmentConfig hostileEnchantmentConfig = entryEnchantment.getValue();
 
-            if (cfg.disabled()) continue;
+            if (hostileEnchantmentConfig.disabled()) continue;
 
             var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
+            danshardermobs.LOGGER.info("blacklistedkey: {}", enchantmentKey);
+
             var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
 
             if (enchantmentOpt.isEmpty()) continue;
             Holder<Enchantment> enchantment = enchantmentOpt.get();
 
+            if (blacklistEnchantments.contains(enchantmentKey)) {
+                danshardermobs.LOGGER.info("blacklisted: {}", enchantment);
+                continue;
+            }
 
             if (enchantment.value().canEnchant(stack)) {
 
@@ -290,18 +301,21 @@ public final class ScaleEvents {
 
                 if (!existingEnchantmentConflicts) {
                     float rollEnchantment = random.nextFloat();
-                    float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+                    float chanceEnchantment = rollEffectChance * hostileEnchantmentConfig.baseRollChance();
+
+                    minEnchantmentLevel = minEnchantmentLevel == -1 ? enchantment.value().getMinLevel() : minEnchantmentLevel;
+                    maxEnchantmentLevel = maxEnchantmentLevel == -1 ? enchantment.value().getMaxLevel() : maxEnchantmentLevel;
 
                     if (rollEnchantment <= chanceEnchantment) {
                         int levelEnchantment = Mth.nextInt(
-                                random,
-                                enchantment.value().getMinLevel(),
-                                enchantment.value().getMaxLevel()
+                            random,
+                            minEnchantmentLevel,
+                            maxEnchantmentLevel
                         );
 
-                        stack.enchant(enchantment, 100);
+                        stack.enchant(enchantment, levelEnchantment);
 
-                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(item));
+                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}. min: {}, max: {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(item), minEnchantmentLevel, maxEnchantmentLevel);
                     }
                 }
             }

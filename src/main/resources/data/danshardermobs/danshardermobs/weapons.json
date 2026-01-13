@@ -4,7 +4,14 @@
       "disabled": false,
       "base_roll_chance": 0.5,
       "enchantable": true,
+      "mob_min_level": -1,
+      "mob_max_level": -1,
+      "enchantment_min_level": 10,
+      "enchantment_max_level": 51,
       "ignore_enchantment_compatibility": false,
+      "blacklist_enchantments": [
+        "minecraft:sharpness"
+      ],
       "tier": 1
     },
 
