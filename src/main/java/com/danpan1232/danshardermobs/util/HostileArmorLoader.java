@@ -89,6 +89,10 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
             for (JsonElement e : arr) {
                 variants.add(parseVariant(e.getAsJsonObject(), defaults));
             }
+        } else {
+
+            // disable by omission
+            return new HostileArmorStackConfig(List.of());
         }
 
         return new HostileArmorStackConfig(variants);

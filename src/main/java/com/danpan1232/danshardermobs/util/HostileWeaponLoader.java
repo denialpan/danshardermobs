@@ -84,6 +84,12 @@ public class HostileWeaponLoader extends SimpleJsonResourceReloadListener {
             }
         }
 
+        else {
+
+            // disable by omission
+            return new HostileWeaponStackConfig(List.of());
+        }
+
         return new HostileWeaponStackConfig(variants);
     }
 
