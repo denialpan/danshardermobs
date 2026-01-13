@@ -178,39 +178,7 @@ public final class ScaleEvents {
 
                             // enchantable, roll enchants
                             if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-
-                                var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-
-                                for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
-
-                                    ResourceLocation enchId = entryEnchantment.getKey();
-                                    HostileEnchantmentConfig cfg = entryEnchantment.getValue();
-
-                                    if (cfg.disabled()) continue;
-
-                                    var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
-                                    var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
-
-                                    if (enchantmentOpt.isEmpty()) continue;
-                                    Holder<Enchantment> enchantment = enchantmentOpt.get();
-
-                                    // TODO: enchantment compatibility check
-
-                                    float rollEnchantment = random.nextFloat();
-                                    float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
-
-                                    if (rollEnchantment <= chanceEnchantment) {
-                                        int levelEnchantment = Mth.nextInt(
-                                                random,
-                                                enchantment.value().getMinLevel(),
-                                                enchantment.value().getMaxLevel()
-                                        );
-
-                                        stack.enchant(enchantment, 100);
-
-                                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(chosenItem));
-                                    }
-                                }
+                                rollEnchantments(mob, chosenItem, stack, random, rollEffectChance);
                             }
                         }
                     }
@@ -219,8 +187,8 @@ public final class ScaleEvents {
         }
 
         if (Config.DANSHARDERMOBS_MOB_ARMOR.get()) {
-            // roll armor based on % of cap
 
+            // roll armor based on % of cap
             Item chosenItem = null;
 
             for (var entry : HostileArmorData.getAll().entrySet()) {
@@ -232,13 +200,11 @@ public final class ScaleEvents {
 
                 EquipmentSlot slot = armorItem.getEquipmentSlot();
 
-                // --- current armor state ---
                 ItemStack currentStack = mob.getItemBySlot(slot);
                 int currentTier = HostileArmorData.getTier(currentStack);
 
                 HostileArmorVariantConfig chosenVariant = null;
 
-                // --- roll variants ---
                 for (HostileArmorVariantConfig variant : stackConfig.variants()) {
 
                     if (variant.disabled()) continue;
@@ -248,24 +214,20 @@ public final class ScaleEvents {
 
                     if (roll > chance) continue;
 
-                    // Tier gate: only replace if better
                     if (variant.tier() <= currentTier) continue;
 
-                    // Prefer highest-tier variant
                     if (chosenVariant == null || variant.tier() > chosenVariant.tier()) {
                         chosenVariant = variant;
                         chosenItem = item;
                     }
                 }
 
-                // --- apply result ---
                 if (chosenItem != null && chosenVariant != null) {
 
                     ItemStack newStack = new ItemStack(item);
 
                     mob.setItemSlot(slot, newStack);
 
-                    // Optional: prevent vanilla drop randomness
                     mob.setDropChance(slot, 0.0f);
 
                     danshardermobs.LOGGER.info(
@@ -278,40 +240,7 @@ public final class ScaleEvents {
 
                     // enchantable, roll enchants
                     if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-
-                        var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-
-                        for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
-
-                            ResourceLocation enchId = entryEnchantment.getKey();
-                            HostileEnchantmentConfig cfg = entryEnchantment.getValue();
-
-                            if (cfg.disabled()) continue;
-
-                            var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
-                            var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
-
-                            if (enchantmentOpt.isEmpty()) continue;
-                            Holder<Enchantment> enchantment = enchantmentOpt.get();
-
-                            // TODO: enchantment compatibility check
-                            // TODO: put enchantment roll in separate function
-
-                            float rollEnchantment = random.nextFloat();
-                            float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
-
-                            if (rollEnchantment <= chanceEnchantment) {
-                                int levelEnchantment = Mth.nextInt(
-                                        random,
-                                        enchantment.value().getMinLevel(),
-                                        enchantment.value().getMaxLevel()
-                                );
-
-                                newStack.enchant(enchantment, 100);
-
-                                danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(chosenItem));
-                            }
-                        }
+                        rollEnchantments(mob, chosenItem, newStack, random, rollEffectChance);
                     }
                 }
             }
@@ -323,6 +252,44 @@ public final class ScaleEvents {
         mobData.putInt("level", playerLevel);
 
         danshardermobs.LOGGER.info("spawned hostile mob with: {}hp", mob.getMaxHealth());
+    }
+
+    private void rollEnchantments(Mob mob, Item item, ItemStack stack, RandomSource random, float rollEffectChance) {
+
+        var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+        for (var entryEnchantment : HostileEnchantmentData.getAll().entrySet()) {
+
+            ResourceLocation enchId = entryEnchantment.getKey();
+            HostileEnchantmentConfig cfg = entryEnchantment.getValue();
+
+            if (cfg.disabled()) continue;
+
+            var enchantmentKey = ResourceKey.create(Registries.ENCHANTMENT, enchId);
+            var enchantmentOpt = enchantmentRegistry.getHolder(enchantmentKey);
+
+            if (enchantmentOpt.isEmpty()) continue;
+            Holder<Enchantment> enchantment = enchantmentOpt.get();
+
+            // TODO: enchantment compatibility check
+            // TODO: put enchantment roll in separate function
+
+            float rollEnchantment = random.nextFloat();
+            float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+
+            if (rollEnchantment <= chanceEnchantment) {
+                int levelEnchantment = Mth.nextInt(
+                        random,
+                        enchantment.value().getMinLevel(),
+                        enchantment.value().getMaxLevel()
+                );
+
+                stack.enchant(enchantment, 100);
+
+                danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(item));
+            }
+        }
+
     }
 
 }
