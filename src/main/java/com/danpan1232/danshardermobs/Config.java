@@ -29,6 +29,12 @@ public class Config {
             .comment("Whether to give enchantments to mob equipment.")
             .define("mobEnchantments", true);
 
+    public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_ILLEGAL_ENCHANTMENTS = BUILDER
+            .comment("Whether to allow mobs to spawn with illegal enchantments.\n" +
+                    "\n ON: Mobs can spawn with items can spawn crazily. For example, a chestplate can have sharpness, and a bow can have Infinity and Mending" +
+                    "\n OFF: arguably not as fun. you should enable this haha")
+            .define("mobIllegalEnchantments", false);
+
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP = BUILDER
             .comment("Whether to always level up on boss kills.")
             .define("mobBossAlwaysLevelUp", true);

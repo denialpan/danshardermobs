@@ -274,15 +274,17 @@ public final class ScaleEvents {
 
             if (enchantment.value().canEnchant(stack)) {
 
-                // check conflicts
                 boolean existingEnchantmentConflicts = false;
+                if (!Config.DANSHARDERMOBS_MOB_ILLEGAL_ENCHANTMENTS.get()) {
 
-                for (var e : stack.getEnchantments().entrySet()) {
-                    Holder<Enchantment> existingEnchantment = e.getKey();
+                    // check conflicts
+                    for (var e : stack.getEnchantments().entrySet()) {
+                        Holder<Enchantment> existingEnchantment = e.getKey();
 
-                    if (!Enchantment.areCompatible(existingEnchantment, enchantment)) {
-                        existingEnchantmentConflicts = true;
-                        break;
+                        if (!Enchantment.areCompatible(existingEnchantment, enchantment)) {
+                            existingEnchantmentConflicts = true;
+                            break;
+                        }
                     }
                 }
 
