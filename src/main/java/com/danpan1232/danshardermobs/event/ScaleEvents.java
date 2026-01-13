@@ -271,25 +271,38 @@ public final class ScaleEvents {
             if (enchantmentOpt.isEmpty()) continue;
             Holder<Enchantment> enchantment = enchantmentOpt.get();
 
-            // TODO: enchantment compatibility check
-            // TODO: put enchantment roll in separate function
 
-            float rollEnchantment = random.nextFloat();
-            float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+            if (enchantment.value().canEnchant(stack)) {
 
-            if (rollEnchantment <= chanceEnchantment) {
-                int levelEnchantment = Mth.nextInt(
-                        random,
-                        enchantment.value().getMinLevel(),
-                        enchantment.value().getMaxLevel()
-                );
+                // check conflicts
+                boolean existingEnchantmentConflicts = false;
 
-                stack.enchant(enchantment, 100);
+                for (var e : stack.getEnchantments().entrySet()) {
+                    Holder<Enchantment> existingEnchantment = e.getKey();
 
-                danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(item));
+                    if (!Enchantment.areCompatible(existingEnchantment, enchantment)) {
+                        existingEnchantmentConflicts = true;
+                        break;
+                    }
+                }
+
+                if (!existingEnchantmentConflicts) {
+                    float rollEnchantment = random.nextFloat();
+                    float chanceEnchantment = rollEffectChance * cfg.baseRollChance();
+
+                    if (rollEnchantment <= chanceEnchantment) {
+                        int levelEnchantment = Mth.nextInt(
+                                random,
+                                enchantment.value().getMinLevel(),
+                                enchantment.value().getMaxLevel()
+                        );
+
+                        stack.enchant(enchantment, 100);
+
+                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}", enchId, levelEnchantment, BuiltInRegistries.ITEM.getKey(item));
+                    }
+                }
             }
         }
-
     }
-
 }

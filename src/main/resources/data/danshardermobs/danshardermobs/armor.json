@@ -23,80 +23,289 @@
       ]
     },
     "minecraft:leather_chestplate": {
-      "tier": 1
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
     "minecraft:leather_leggings": {
-      "tier": 1
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
     "minecraft:leather_boots": {
-      "tier": 1
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:gold_helmet": {
-      "tier": 2
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:gold_chestplate": {
-      "tier": 2
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:gold_leggings": {
-      "tier": 2
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:gold_boots": {
-      "tier": 2
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:iron_helmet": {
-      "tier": 3
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:iron_chestplate": {
-      "tier": 3
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:iron_leggings": {
-      "tier": 3
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:iron_boots": {
-      "tier": 3
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
 
     "minecraft:diamond_helmet": {
-      "tier": 4
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:diamond_chestplate": {
-      "tier": 4
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
 
     "minecraft:diamond_leggings": {
-      "tier": 4
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
 
     "minecraft:diamond_boots": {
-      "tier": 4
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:netherite_helmet": {
-      "tier": 5
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:netherite_chestplate": {
-      "tier": 5
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:netherite_leggings": {
-      "tier": 5
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     },
 
     "minecraft:netherite_boots": {
-      "tier": 5
+      "variants": [
+        {
+          "base_roll_chance": 0.5,
+          "enchantable": true,
+          "tier": 1
+        },
+        {
+          "base_roll_chance": 0.1,
+          "enchantable": true,
+          "tier": 100
+        }
+      ]
     }
 
   }
