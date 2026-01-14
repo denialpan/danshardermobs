@@ -13,6 +13,8 @@
   "danshardermobs.configuration.mobWeapons": "Enable mob weapons",
   "danshardermobs.configuration.mobEnchantments": "Enable mob enchantments",
   "danshardermobs.configuration.mobIllegalEnchantments": "Enable mob illegal enchantments",
+  "danshardermobs.configuration.mobDropRate": "Mob equipment drop rate",
+  "danshardermobs.configuration.mobDropDamagePercentage": "Mob equipment damage %",
   "danshardermobs.configuration.mobBossAlwaysLevelUp": "Enable always level up boss kill",
 
   "danshardermobs.configuration.playerLevelCap": "Player level cap",

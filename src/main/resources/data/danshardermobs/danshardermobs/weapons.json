@@ -61,12 +61,12 @@
       "variants": [
         {
           "tier": 2,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.6
         },
         {
           "tier": 2,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.2
         }
       ]
     },
@@ -75,12 +75,12 @@
       "variants": [
         {
           "tier": 3,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.5
         },
         {
           "tier": 3,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.1
         }
       ]
     },
@@ -89,12 +89,12 @@
       "variants": [
         {
           "tier": 4,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.4
         },
         {
           "tier": 4,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.05
         }
       ]
     },
@@ -103,12 +103,12 @@
       "variants": [
         {
           "tier": 5,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.3
         },
         {
           "tier": 5,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.025
         }
       ]
     },
@@ -117,12 +117,96 @@
       "variants": [
         {
           "tier": 6,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.2
         },
         {
           "tier": 6,
           "enchantable": true,
+          "base_roll_chance": 0.0125
+        }
+      ]
+    },
+
+    "minecraft:wooden_pickaxe": {
+      "variants": [
+        {
+          "tier": 1,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 1,
+          "enchantable": true,
           "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:gold_pickaxe": {
+      "variants": [
+        {
+          "tier": 2,
+          "base_roll_chance": 0.6
+        },
+        {
+          "tier": 2,
+          "enchantable": true,
+          "base_roll_chance": 0.2
+        }
+      ]
+    },
+
+    "minecraft:stone_pickaxe": {
+      "variants": [
+        {
+          "tier": 3,
+          "base_roll_chance": 0.5
+        },
+        {
+          "tier": 3,
+          "enchantable": true,
+          "base_roll_chance": 0.1
+        }
+      ]
+    },
+
+    "minecraft:iron_pickaxe": {
+      "variants": [
+        {
+          "tier": 4,
+          "base_roll_chance": 0.4
+        },
+        {
+          "tier": 4,
+          "enchantable": true,
+          "base_roll_chance": 0.05
+        }
+      ]
+    },
+
+    "minecraft:diamond_pickaxe": {
+      "variants": [
+        {
+          "tier": 5,
+          "base_roll_chance": 0.3
+        },
+        {
+          "tier": 5,
+          "enchantable": true,
+          "base_roll_chance": 0.025
+        }
+      ]
+    },
+
+    "minecraft:netherite_pickaxe": {
+      "variants": [
+        {
+          "tier": 6,
+          "base_roll_chance": 0.1
+        },
+        {
+          "tier": 6,
+          "enchantable": true,
+          "base_roll_chance": 0.0125
         }
       ]
     },
@@ -145,12 +229,12 @@
       "variants": [
         {
           "tier": 2,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.6
         },
         {
           "tier": 2,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.2
         }
       ]
     },
@@ -159,12 +243,12 @@
       "variants": [
         {
           "tier": 3,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.5
         },
         {
           "tier": 3,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.1
         }
       ]
     },
@@ -173,12 +257,12 @@
       "variants": [
         {
           "tier": 4,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.4
         },
         {
           "tier": 4,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.05
         }
       ]
     },
@@ -187,12 +271,12 @@
       "variants": [
         {
           "tier": 5,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.3
         },
         {
           "tier": 5,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.025
         }
       ]
     },
@@ -201,12 +285,12 @@
       "variants": [
         {
           "tier": 6,
-          "base_roll_chance": 0.7
+          "base_roll_chance": 0.1
         },
         {
           "tier": 6,
           "enchantable": true,
-          "base_roll_chance": 0.3
+          "base_roll_chance": 0.0125
         }
       ]
     }

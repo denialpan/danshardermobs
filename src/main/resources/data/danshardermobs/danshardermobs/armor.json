@@ -180,7 +180,7 @@
     "minecraft:netherite_helmet": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.2,
           "enchantable": true,
           "tier": 5
         }
@@ -190,7 +190,7 @@
     "minecraft:netherite_chestplate": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.2,
           "enchantable": true,
           "tier": 5
         }
@@ -200,7 +200,7 @@
     "minecraft:netherite_leggings": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.2,
           "enchantable": true,
           "tier": 5
         }
@@ -210,7 +210,7 @@
     "minecraft:netherite_boots": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.2,
           "enchantable": true,
           "tier": 5
         }

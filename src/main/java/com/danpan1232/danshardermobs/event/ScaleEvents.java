@@ -65,7 +65,6 @@ public final class ScaleEvents {
             ItemStack stack = mob.getItemBySlot(slot);
             if (stack.isEmpty()) continue;
 
-            // TODO: json lower percentages in tier manually, automatically may be too difficult
             int damage = (int) (stack.getMaxDamage() * Config.DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE.get());
             stack.setDamageValue(Mth.nextInt(random, damage, stack.getMaxDamage() - 1));
             float chance = random.nextFloat();
