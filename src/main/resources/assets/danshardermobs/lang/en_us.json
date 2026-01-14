@@ -26,12 +26,9 @@
   "danshardermobs.configuration.playerVsMobLevel": "Minimum % mob level to player",
   "danshardermobs.configuration.playerVsMobLevelFlat": "Minimum flat mob level to player",
 
-
   "danshardermobs.configuration.playerZClamp": "Player scaling effect",
   "danshardermobs.configuration.playerZDeadzone": "Player scaling stagnation",
   "danshardermobs.configuration.playerZBias": "Player bias scaling",
-
-
 
   "danshardermobs.configuration.playerEWMA": "(advanced) EWMA Samples",
   "danshardermobs.configuration.playerVariance": "(advanced) Variance floor",

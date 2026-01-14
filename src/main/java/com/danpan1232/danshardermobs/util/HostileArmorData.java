@@ -41,15 +41,4 @@ public final class HostileArmorData {
         return ENTRIES;
     }
 
-    public static int getTier(ItemStack stack) {
-        if (stack.isEmpty()) return 0;
-
-        Item item = stack.getItem();
-        HostileArmorStackConfig cfg = HostileArmorData.get(BuiltInRegistries.ITEM.getKey(item));
-        if (cfg == null || cfg.variants().isEmpty()) return 0;
-
-        // TODO: assume first variant represents the equipped tier, likely change though
-        return cfg.variants().get(0).tier();
-    }
-
 }

@@ -4,8 +4,8 @@ public record HostileEntityConfig(
         boolean disabled,
         int baseLevel,
         int maxHealth,
-        float scalingMultiplier,
-        int scalingFlatMaxGain,
+        float healthScalingMultiplier,
+        int healthScalingFlatMaxGain,
         int levelCap,
         float baseScalingLevelKillReward,
         boolean isBoss

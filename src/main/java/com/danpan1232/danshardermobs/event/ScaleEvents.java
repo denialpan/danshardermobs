@@ -123,8 +123,6 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         float bonusHP = playerLevel * 1.0f;
 
-        // TODO: refactor scaling multiplier and flat gain to health prefix, as its for mob health, not player level
-
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
 
@@ -151,7 +149,7 @@ public final class ScaleEvents {
         }
 
         if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
-            // roll effects based on % of cap TODO: maybe amplifier??
+            // TODO: maybe amplifier??
             for (var entry : HostileEffectData.getAll().entrySet()) {
                 MobEffect effect = entry.getKey();
                 HostileEffectConfig hostileEffectConfig = entry.getValue();
