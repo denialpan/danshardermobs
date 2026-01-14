@@ -1,45 +1,214 @@
 {
   "weapons": {
+
     "default": {
       "disabled": false,
       "base_roll_chance": 0.5,
       "enchantable": true,
       "mob_min_level": -1,
       "mob_max_level": -1,
-      "enchantment_min_level": 10,
-      "enchantment_max_level": 51,
+      "enchantment_min_level": -1,
+      "enchantment_max_level": -1,
       "ignore_enchantment_compatibility": false,
       "blacklist_enchantments": [
-        "minecraft:sharpness"
       ],
       "tier": 1
     },
 
-    "minecraft:wooden_sword": {
+    "minecraft:bow": {
       "variants": [
-
         {
           "tier": 1,
-          "base_roll_chance": 0.9
+          "base_roll_chance": 0.7
         },
         {
-          "tier": 100,
-          "base_roll_chance": 0.1,
+          "tier": 1,
           "enchantable": true,
-          "ignore_enchantment_compatibility": true
+          "base_roll_chance": 0.3
         }
+      ]
+    },
 
+    "minecraft:crossbow": {
+      "variants": [
+        {
+          "tier": 1,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 1,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:wooden_axe": {
+      "variants": [
+        {
+          "tier": 1,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 1,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:gold_axe": {
+      "variants": [
+        {
+          "tier": 2,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 2,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:stone_axe": {
+      "variants": [
+        {
+          "tier": 3,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 3,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:iron_axe": {
+      "variants": [
+        {
+          "tier": 4,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 4,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:diamond_axe": {
+      "variants": [
+        {
+          "tier": 5,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 5,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:netherite_axe": {
+      "variants": [
+        {
+          "tier": 6,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 6,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:wooden_sword": {
+      "variants": [
+        {
+          "tier": 1,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 1,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:gold_sword": {
+      "variants": [
+        {
+          "tier": 2,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 2,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:stone_sword": {
+      "variants": [
+        {
+          "tier": 3,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 3,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
+    },
+
+    "minecraft:iron_sword": {
+      "variants": [
+        {
+          "tier": 4,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 4,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
       ]
     },
 
     "minecraft:diamond_sword": {
       "variants": [
         {
-          "tier": 999,
-          "base_roll_chance": 1
+          "tier": 5,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 5,
+          "enchantable": true,
+          "base_roll_chance": 0.3
         }
       ]
+    },
 
+    "minecraft:netherite_sword": {
+      "variants": [
+        {
+          "tier": 6,
+          "base_roll_chance": 0.7
+        },
+        {
+          "tier": 6,
+          "enchantable": true,
+          "base_roll_chance": 0.3
+        }
+      ]
     }
   }
 }

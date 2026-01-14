@@ -54,6 +54,7 @@ public class HostileEntityLoader extends SimpleJsonResourceReloadListener {
         return new HostileEntityConfig(
                 obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
                 obj.has("base_level") ? obj.get("base_level").getAsInt() : 1,
+                obj.has("max_health") ? obj.get("max_health").getAsInt() : -1,
                 obj.has("scaling_multiplier") ? obj.get("scaling_multiplier").getAsFloat() : 1.0f,
                 obj.has("scaling_flat_max_gain") ? obj.get("scaling_flat_max_gain").getAsInt() : 50,
                 obj.has("level_cap") ? obj.get("level_cap").getAsInt() : -1,

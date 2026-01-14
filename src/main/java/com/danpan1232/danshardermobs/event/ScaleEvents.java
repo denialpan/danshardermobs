@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -57,6 +58,23 @@ public final class ScaleEvents {
         if (!(event.getSource().getEntity() instanceof Player player)) return;
         danshardermobs.LOGGER.info("mob die: {}", mob);
         ScaleFactor.recordMobDeath(player, mob);
+
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack stack = mob.getItemBySlot(slot);
+            if (stack.isEmpty()) continue;
+
+            // TODO: set drop chance config
+            // TODO: json lower percentages in tier manually, automatically may be too difficult
+            ItemEntity drop = new ItemEntity(
+                    mob.level(),
+                    mob.getX(), mob.getY(), mob.getZ(),
+                    stack.copy()
+            );
+
+            mob.level().addFreshEntity(drop);
+            mob.setItemSlot(slot, ItemStack.EMPTY);
+
+        }
     }
 
     @SubscribeEvent
@@ -87,7 +105,7 @@ public final class ScaleEvents {
         // initial mob checks
         // mob is hostile
         ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
-        if (!(mob instanceof Monster) && !HostileEntityData.isHostile(id)) return;
+        if (!HostileEntityData.isHostile(id)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         int simulationDistance = serverLevel.getServer().getPlayerList().getSimulationDistance();
@@ -100,13 +118,21 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         float bonusHP = playerLevel * 1.0f;
 
+        // TODO: refactor scaling multiplier and flat gain to health prefix, as its for mob health, not player level
 
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
 
             AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
             if (maxHealth == null) return;
-            maxHealth.setBaseValue(maxHealth.getBaseValue() + bonusHP);
+            HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
+
+            int maximumHealth = hostileEntityConfig.maxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.maxHealth();
+            maximumHealth = Math.min(maximumHealth, (int) (maxHealth.getBaseValue() + bonusHP));
+            danshardermobs.LOGGER.info("health applied: {}", maximumHealth);
+
+
+            maxHealth.setBaseValue(maximumHealth);
             mob.setHealth(mob.getMaxHealth());
 
         }

@@ -1,73 +1,55 @@
 {
   "armor": {
+
     "default": {
       "disabled": false,
       "base_roll_chance": 0.5,
       "enchantable": true,
       "mob_min_level": -1,
       "mob_max_level": -1,
-      "enchantment_min_level": 23,
-      "enchantment_max_level": 51,
+      "enchantment_min_level": -1,
+      "enchantment_max_level": -1,
       "ignore_enchantment_compatibility": false,
-      "blacklist_enchantments": [
-
-      ],
+      "blacklist_enchantments": [],
       "tier": 1
     },
 
     "minecraft:leather_helmet": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
-          "enchantable": true,
+          "base_roll_chance": 0.7,
+          "enchantable": false,
           "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
         }
       ]
     },
+
     "minecraft:leather_chestplate": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.7,
           "enchantable": true,
           "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
         }
       ]
     },
+
     "minecraft:leather_leggings": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.7,
           "enchantable": true,
           "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
         }
       ]
     },
+
     "minecraft:leather_boots": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.7,
           "enchantable": true,
           "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
         }
       ]
     },
@@ -77,12 +59,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 2
         }
       ]
     },
@@ -92,12 +69,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 2
         }
       ]
     },
@@ -107,12 +79,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 2
         }
       ]
     },
@@ -122,12 +89,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 2
         }
       ]
     },
@@ -135,14 +97,9 @@
     "minecraft:iron_helmet": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.4,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 3
         }
       ]
     },
@@ -150,14 +107,9 @@
     "minecraft:iron_chestplate": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.4,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 3
         }
       ]
     },
@@ -165,14 +117,9 @@
     "minecraft:iron_leggings": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.4,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 3
         }
       ]
     },
@@ -180,14 +127,9 @@
     "minecraft:iron_boots": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.4,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 3
         }
       ]
     },
@@ -196,14 +138,9 @@
     "minecraft:diamond_helmet": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.3,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 4
         }
       ]
     },
@@ -211,14 +148,9 @@
     "minecraft:diamond_chestplate": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.3,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 4
         }
       ]
     },
@@ -227,14 +159,9 @@
     "minecraft:diamond_leggings": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.3,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 4
         }
       ]
     },
@@ -243,14 +170,9 @@
     "minecraft:diamond_boots": {
       "variants": [
         {
-          "base_roll_chance": 0.5,
+          "base_roll_chance": 0.3,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 4
         }
       ]
     },
@@ -260,12 +182,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 5
         }
       ]
     },
@@ -275,12 +192,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 5
         }
       ]
     },
@@ -290,12 +202,7 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 5
         }
       ]
     },
@@ -305,15 +212,9 @@
         {
           "base_roll_chance": 0.5,
           "enchantable": true,
-          "tier": 1
-        },
-        {
-          "base_roll_chance": 0.1,
-          "enchantable": true,
-          "tier": 100
+          "tier": 5
         }
       ]
     }
-
   }
 }

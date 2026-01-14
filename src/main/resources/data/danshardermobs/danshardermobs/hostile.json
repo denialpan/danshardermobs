@@ -1,9 +1,11 @@
 {
+
   "entities": {
 
     "default": {
       "disabled": false,
       "base_level": 1,
+      "max_health": -1,
       "scaling_multiplier": 1.0,
       "scaling_flag_max_gain": 50,
       "level_cap": -1,
@@ -11,29 +13,144 @@
       "is_boss": false
     },
 
-    "minecraft:zombie": {
-      "base_level": 1,
-      "scaling_multiplier": 1.0,
-      "scaling_flat_max_gain": 50,
-      "level_cap": -1
+    "minecraft:blaze": {
+
     },
 
-    "minecraft:skeleton": {
-      "base_level": 1,
-      "scaling_multiplier": 1.0,
-      "scaling_flat_max_gain": 50,
-      "level_cap": -1
+    "minecraft:bogged": {
+
     },
 
-    "minecraft:slime": {
-      "base_level": 5,
-      "scaling_multiplier": 1.0,
-      "scaling_flat_max_gain": 50,
-      "level_cap": -1
+    "minecraft:cave_spider": {
+
+    },
+
+    "minecraft:creeper": {
+
+    },
+
+    "minecraft:drowned": {
+
+    },
+
+    "minecraft:elder_guardian": {
+
+    },
+
+    "minecraft:enderman": {
+
+    },
+
+    "minecraft:endermite": {
+
+    },
+
+    "minecraft:evoker": {
+
     },
 
     "minecraft:ghast": {
+
     },
+
+    "minecraft:giant": {
+
+    },
+
+    "minecraft:guardian": {
+
+    },
+
+    "minecraft:hoglin": {
+
+    },
+
+    "minecraft:husk": {
+
+    },
+
+    "minecraft:illusioner": {
+
+    },
+
+    "minecraft:magma_cube": {
+
+    },
+
+    "minecraft:phantom": {
+
+    },
+
+    "minecraft:piglin": {
+
+    },
+
+    "minecraft:piglin_brute": {
+
+    },
+
+    "minecraft:pillager": {
+
+    },
+
+    "minecraft:ravager": {
+
+    },
+
+    "minecraft:shulker": {
+
+    },
+
+    "minecraft:skeleton": {
+
+    },
+
+    "minecraft:slime": {
+
+    },
+
+    "minecraft:spider": {
+
+    },
+
+    "minecraft:stray": {
+
+    },
+
+    "minecraft:vex": {
+
+    },
+
+    "minecraft:vindicator": {
+
+    },
+
+
+    "minecraft:witch": {
+
+    },
+
+    "minecraft:wither_skeleton": {
+
+    },
+
+    "minecraft:zoglin": {
+
+    },
+
+    "minecraft:zombie": {
+
+    },
+
+    "minecraft:zombified_piglin": {
+
+    },
+
+
+    "minecraft:warden": {
+      "is_boss": true
+    },
+
     "minecraft:wither": {
       "base_scaling_level_kill_reward": 2.0,
       "is_boss": true

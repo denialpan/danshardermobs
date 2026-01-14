@@ -122,6 +122,8 @@ public final class ScaleFactor {
         }
         HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
+
+        // TODO: boss scaling and leveling balance: boss kill reward, level difference in kill +-
         if (Config.DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP.get() && hostileEntityConfig.isBoss()) {
             danshardermobs.LOGGER.info("boss killed");
             ttkMs = -1;
