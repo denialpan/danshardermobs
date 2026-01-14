@@ -35,6 +35,16 @@ public class Config {
                     "\n OFF: arguably not as fun. you should enable this haha")
             .define("mobIllegalEnchantments", false);
 
+    public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_MOB_DROP_RATE = BUILDER
+            .comment("Drop rate of equipment for mobs")
+            .defineInRange("mobDropRate", 0.1, 0, 1);
+
+    public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE = BUILDER
+            .comment("Damage percentage of equipment dropped from mobs\n" +
+                    "\n0: no damage" +
+                    "\n0.99: nearly all damage")
+            .defineInRange("mobDropDamagePercentage", 0.9, 0, 0.999);
+
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP = BUILDER
             .comment("Whether to always level up on boss kills.")
             .define("mobBossAlwaysLevelUp", true);

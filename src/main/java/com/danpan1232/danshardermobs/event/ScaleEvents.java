@@ -59,12 +59,18 @@ public final class ScaleEvents {
         danshardermobs.LOGGER.info("mob die: {}", mob);
         ScaleFactor.recordMobDeath(player, mob);
 
+        RandomSource random = mob.getRandom();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
+
             ItemStack stack = mob.getItemBySlot(slot);
             if (stack.isEmpty()) continue;
 
-            // TODO: set drop chance config
             // TODO: json lower percentages in tier manually, automatically may be too difficult
+            int damage = (int) (stack.getMaxDamage() * Config.DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE.get());
+            stack.setDamageValue(Mth.nextInt(random, damage, stack.getMaxDamage() - 1));
+            float chance = random.nextFloat();
+            if (chance > Config.DANSHARDERMOBS_MOB_DROP_RATE.get()) continue;
+
             ItemEntity drop = new ItemEntity(
                     mob.level(),
                     mob.getX(), mob.getY(), mob.getZ(),
