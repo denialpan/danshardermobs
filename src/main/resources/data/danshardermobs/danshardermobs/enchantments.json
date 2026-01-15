@@ -2,7 +2,7 @@
   "enchantments": {
     "default": {
       "disabled": false,
-      "base_roll_chance": 0.5
+      "base_roll_chance": 0.25
     },
 
     "minecraft:aqua_affinity": {
@@ -50,6 +50,7 @@
     "minecraft:lure": {
     },
     "minecraft:mending": {
+      "base_roll_chance": 0.05
     },
     "minecraft:multishot": {
     },

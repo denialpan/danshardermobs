@@ -3,7 +3,7 @@
 
     "default": {
       "disabled": false,
-      "base_roll_chance": 1
+      "base_roll_chance": 0.5
     },
 
     "minecraft:slow_falling": {
