@@ -30,7 +30,7 @@ public class HostileEntityLoader extends SimpleJsonResourceReloadListener {
             if (entities == null) continue;
 
             if (entities.has("default")) {
-                HostileEntityData.setDefault(parseConfig(entities.getAsJsonObject("default")));
+                HostileEntityData.setDefault(parseDefaults(entities.getAsJsonObject("default")));
             }
 
             for (var entityEntry : entities.entrySet()) {
@@ -42,24 +42,38 @@ public class HostileEntityLoader extends SimpleJsonResourceReloadListener {
                     continue;
                 }
 
-                HostileEntityConfig config =
-                        parseConfig(entityEntry.getValue().getAsJsonObject());
+                HostileEntityConfig config = parseConfig(entityEntry.getValue().getAsJsonObject(), HostileEntityData.defaults());
 
                 HostileEntityData.put(id, config);
             }
         }
     }
 
-    private static HostileEntityConfig parseConfig(JsonObject obj) {
+    private static HostileEntityConfig parseDefaults(JsonObject obj) {
         return new HostileEntityConfig(
                 obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
                 obj.has("base_level") ? obj.get("base_level").getAsInt() : 1,
                 obj.has("max_health") ? obj.get("max_health").getAsInt() : -1,
-                obj.has("health_scaling_multiplier") ? obj.get("health_scaling_multiplier").getAsFloat() : 1.0f,
+                obj.has("health_scaling_multiplier") ? obj.get("health_scaling_multiplier").getAsFloat() : 1,
                 obj.has("health_scaling_flat_max_gain") ? obj.get("health_scaling_flat_max_gain").getAsInt() : 50,
                 obj.has("level_cap") ? obj.get("level_cap").getAsInt() : -1,
-                obj.has("base_scaling_level_kill_reward") ? obj.get("base_scaling_level_kill_reward").getAsFloat() : 1.0f,
+                obj.has("base_scaling_level_kill_reward") ? obj.get("base_scaling_level_kill_reward").getAsFloat() : 1.0F,
+                obj.has("xp_reward_multiplier") ? obj.get("xp_reward_multiplier").getAsFloat() : 1.5F,
                 obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : false
+        );
+    }
+
+    private static HostileEntityConfig parseConfig(JsonObject obj, HostileEntityConfig defaults) {
+        return new HostileEntityConfig(
+                obj.has("disabled") ? obj.get("disabled").getAsBoolean() : defaults.disabled(),
+                obj.has("base_level") ? obj.get("base_level").getAsInt() : defaults.baseLevel(),
+                obj.has("max_health") ? obj.get("max_health").getAsInt() : defaults.maxHealth(),
+                obj.has("health_scaling_multiplier") ? obj.get("health_scaling_multiplier").getAsFloat() : defaults.healthScalingMultiplier(),
+                obj.has("health_scaling_flat_max_gain") ? obj.get("health_scaling_flat_max_gain").getAsInt() : defaults.healthScalingFlatMaxGain(),
+                obj.has("level_cap") ? obj.get("level_cap").getAsInt() : defaults.levelCap(),
+                obj.has("base_scaling_level_kill_reward") ? obj.get("base_scaling_level_kill_reward").getAsFloat() : defaults.baseScalingLevelKillReward(),
+                obj.has("xp_reward_multiplier") ? obj.get("xp_reward_multiplier").getAsFloat() : defaults.xpRewardMultiplier(),
+                obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : defaults.isBoss()
         );
     }
 

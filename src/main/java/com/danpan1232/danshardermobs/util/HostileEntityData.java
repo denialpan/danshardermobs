@@ -23,6 +23,10 @@ public final class HostileEntityData {
         DEFAULT = config;
     }
 
+    public static HostileEntityConfig defaults() {
+        return DEFAULT;
+    }
+
     public static void put(ResourceLocation id, HostileEntityConfig config) {
         ENTITY_CONFIGS.put(id, config);
     }

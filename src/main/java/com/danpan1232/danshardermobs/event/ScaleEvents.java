@@ -36,6 +36,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.Set;
@@ -44,7 +45,7 @@ import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
 
 public final class ScaleEvents {
 
-    public static final String TAG_TIER = "tier";
+    public static final String TAG_MOB_LEVEL = "level";
     public static final String TAG_SPAWNED_PREVIOUSLY = "spawnedpreviously";
 
     @SubscribeEvent
@@ -64,10 +65,13 @@ public final class ScaleEvents {
 
         if (level.isClientSide()) return;
 
-        // TODO: add vanilla ender dragon final boss check, as it not instance of mob
+        if (entity instanceof EnderDragon) {
+            ScaleFactor.updatePlayerLevel(player, -1, null);
+            danshardermobs.LOGGER.info("ender dragon death by {}", player);
+        }
 
         if (!(entity instanceof Monster mob)) return;
-        danshardermobs.LOGGER.info("mob die: {}", mob);
+        danshardermobs.LOGGER.info("mob die: {}, experience spawned: {}", mob);
 
         ScaleFactor.recordMobDeath(player, mob);
 
@@ -92,6 +96,23 @@ public final class ScaleEvents {
             mob.setItemSlot(slot, ItemStack.EMPTY);
 
         }
+    }
+
+    @SubscribeEvent
+    public void onExperienceOrbDrops(LivingExperienceDropEvent event) {
+        LivingEntity entity = event.getEntity();
+        Player player = event.getAttackingPlayer();
+
+        if (entity.level().isClientSide()) return;
+
+        int xp = event.getDroppedExperience();
+        danshardermobs.LOGGER.info("spawned xp: {}", xp);
+
+        HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+        CompoundTag tierTag = entity.getPersistentData();
+        int mobLevel = tierTag.getInt(TAG_MOB_LEVEL);
+
+        event.setDroppedExperience((int) (xp * mobLevel * hostileEntityConfig.xpRewardMultiplier()));
     }
 
     @SubscribeEvent
@@ -139,7 +160,6 @@ public final class ScaleEvents {
         // get player level
         int playerLevel = ScaleFactor.getPlayerLevel(player);
         if (playerLevel <= 0) return;
-        float bonusHP = playerLevel;
 
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
@@ -147,6 +167,9 @@ public final class ScaleEvents {
             AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
             if (maxHealth == null) return;
             HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
+
+            float bonusHP = playerLevel * hostileEntityConfig.healthScalingMultiplier();
+            danshardermobs.LOGGER.info("health applied: {}", hostileEntityConfig.healthScalingMultiplier());
 
             int maximumHealth = (int) (hostileEntityConfig.isBoss() ? (maxHealth.getBaseValue() + bonusHP) * hostileEntityConfig.healthScalingMultiplier() : maxHealth.getBaseValue());
 
@@ -168,7 +191,6 @@ public final class ScaleEvents {
         }
 
         if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
-            // TODO: maybe amplifier??
             for (var entry : HostileEffectData.getAll().entrySet()) {
                 MobEffect effect = entry.getKey();
                 HostileEffectConfig hostileEffectConfig = entry.getValue();
@@ -299,7 +321,7 @@ public final class ScaleEvents {
 
         // mark that mob has been modified by this mod
         mobData.putBoolean(TAG_SPAWNED_PREVIOUSLY, true);
-        mobData.putInt("level", playerLevel);
+        mobData.putInt(TAG_MOB_LEVEL, playerLevel);
 
         danshardermobs.LOGGER.info("spawned hostile mob: {} with: {}hp", mob, mob.getMaxHealth());
     }

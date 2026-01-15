@@ -11,7 +11,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -104,6 +106,16 @@ public final class ScaleFactor {
     public static int updatePlayerLevel(Player player, float ttkMs, Mob mob) {
 
         int playerLevel = getPlayerLevel(player);
+
+        // killed enderdragon
+        if (ttkMs < 0) {
+            HostileEntityConfig enderDragonConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON));
+            playerLevel *= (int) enderDragonConfig.baseScalingLevelKillReward();
+            danshardermobs.LOGGER.info("level increased to from enderdragon: {}", playerLevel);
+            return Math.min(Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(),Math.max(0, playerLevel));
+
+        }
+
         CompoundTag mobData = mob.getPersistentData();
         int mobLevel = mobData.getInt(TAG_LEVEL);
 
@@ -123,7 +135,6 @@ public final class ScaleFactor {
         HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
 
-        // TODO: boss scaling boss kill reward
         float levelMultiplier = 1;
         if (Config.DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP.get() && hostileEntityConfig.isBoss()) {
             // mark impossible time as boss
