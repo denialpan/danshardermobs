@@ -148,15 +148,19 @@
 
 
     "minecraft:warden": {
+      "base_scaling_level_kill_reward": 4.0,
+      "health_scaling_multiplier": 1.5,
       "is_boss": true
     },
 
     "minecraft:wither": {
       "base_scaling_level_kill_reward": 2.0,
+      "health_scaling_multiplier": 1.5,
       "is_boss": true
     },
     "minecraft:ender_dragon": {
       "base_scaling_level_kill_reward": 5.0,
+      "health_scaling_multiplier": 2.5,
       "is_boss": true
     }
   }

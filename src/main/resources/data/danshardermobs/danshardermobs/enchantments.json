@@ -2,7 +2,7 @@
   "enchantments": {
     "default": {
       "disabled": false,
-      "base_roll_chance": 0.25
+      "base_roll_chance": 0.15
     },
 
     "minecraft:aqua_affinity": {

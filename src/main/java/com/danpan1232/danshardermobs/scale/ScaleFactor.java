@@ -123,15 +123,19 @@ public final class ScaleFactor {
         HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
 
-        // TODO: boss scaling and leveling balance: boss kill reward, level difference in kill +-
+        // TODO: boss scaling boss kill reward
+        float levelMultiplier = 1;
         if (Config.DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP.get() && hostileEntityConfig.isBoss()) {
-            danshardermobs.LOGGER.info("boss killed");
+            // mark impossible time as boss
             ttkMs = -1;
+            levelMultiplier *= hostileEntityConfig.baseScalingLevelKillReward();
+
         }
+
         int value = EvaluatePlayerLevel.update(player, ttkMs);
         danshardermobs.LOGGER.info("level increased by: {}", value);
 
-        playerLevel += (int) (value * hostileEntityConfig.baseScalingLevelKillReward());
+        playerLevel += (int) (value * levelMultiplier);
 
         return Math.min(Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(),Math.max(0, playerLevel));
     }

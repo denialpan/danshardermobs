@@ -18,9 +18,11 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +45,7 @@ import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
 public final class ScaleEvents {
 
     public static final String TAG_TIER = "tier";
+    public static final String TAG_SPAWNED_PREVIOUSLY = "spawnedpreviously";
 
     @SubscribeEvent
     public void onMobDamaged(LivingDamageEvent.Post event) {
@@ -54,9 +57,18 @@ public final class ScaleEvents {
 
     @SubscribeEvent
     public void onMobDeath(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof Monster mob)) return;
+
+        LivingEntity entity = event.getEntity();
+        Level level = entity.level();
         if (!(event.getSource().getEntity() instanceof Player player)) return;
+
+        if (level.isClientSide()) return;
+
+        // TODO: add vanilla ender dragon final boss check, as it not instance of mob
+
+        if (!(entity instanceof Monster mob)) return;
         danshardermobs.LOGGER.info("mob die: {}", mob);
+
         ScaleFactor.recordMobDeath(player, mob);
 
         RandomSource random = mob.getRandom();
@@ -105,6 +117,12 @@ public final class ScaleEvents {
         Level level = event.getLevel();
 
         if (!(entity instanceof Mob mob)) return;
+
+        CompoundTag mobData = mob.getPersistentData();
+
+        // holy massive bug fix to prevent infinite scaling on restarting server
+        if (mobData.getBoolean(TAG_SPAWNED_PREVIOUSLY)) return;
+
         RandomSource random = mob.getRandom();
 
         // initial mob checks
@@ -121,7 +139,7 @@ public final class ScaleEvents {
         // get player level
         int playerLevel = ScaleFactor.getPlayerLevel(player);
         if (playerLevel <= 0) return;
-        float bonusHP = playerLevel * 1.0f;
+        float bonusHP = playerLevel;
 
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
@@ -130,10 +148,11 @@ public final class ScaleEvents {
             if (maxHealth == null) return;
             HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
-            int maximumHealth = hostileEntityConfig.maxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.maxHealth();
-            maximumHealth = Math.min(maximumHealth, (int) (maxHealth.getBaseValue() + bonusHP));
-            danshardermobs.LOGGER.info("health applied: {}", maximumHealth);
+            int maximumHealth = (int) (hostileEntityConfig.isBoss() ? (maxHealth.getBaseValue() + bonusHP) * hostileEntityConfig.healthScalingMultiplier() : maxHealth.getBaseValue());
 
+            int configMaximumHealth = hostileEntityConfig.maxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.maxHealth();
+            maximumHealth = (int) Math.min(configMaximumHealth, maximumHealth + bonusHP);
+            danshardermobs.LOGGER.info("health applied: {}", maximumHealth);
 
             maxHealth.setBaseValue(maximumHealth);
             mob.setHealth(mob.getMaxHealth());
@@ -279,11 +298,10 @@ public final class ScaleEvents {
         }
 
         // mark that mob has been modified by this mod
-        var mobData = mob.getPersistentData();
-        mobData.putBoolean("danshardermobs", true);
+        mobData.putBoolean(TAG_SPAWNED_PREVIOUSLY, true);
         mobData.putInt("level", playerLevel);
 
-        danshardermobs.LOGGER.info("spawned hostile mob with: {}hp", mob.getMaxHealth());
+        danshardermobs.LOGGER.info("spawned hostile mob: {} with: {}hp", mob, mob.getMaxHealth());
     }
 
     private void rollEnchantments(Mob mob, Item item, ItemStack stack, int minEnchantmentLevel, int maxEnchantmentLevel, Set<ResourceKey<Enchantment>> blacklistEnchantments, RandomSource random, float rollEffectChance) {
