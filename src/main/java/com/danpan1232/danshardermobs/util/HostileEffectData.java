@@ -1,15 +1,13 @@
 package com.danpan1232.danshardermobs.util;
 
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public final class HostileEffectData {
 
-    private static final Map<MobEffect, HostileEffectConfig> EFFECTS = new HashMap<>();
+    private static final Map<ResourceLocation, HostileEffectConfig> EFFECTS = new HashMap<>();
     private static HostileEffectConfig DEFAULT = HostileEffectConfig.DEFAULT;
 
     public static void clear() {
@@ -21,11 +19,15 @@ public final class HostileEffectData {
         DEFAULT = config;
     }
 
-    public static void put(MobEffect effect, HostileEffectConfig config) {
+    public static HostileEffectConfig defaults() {
+        return DEFAULT;
+    }
+
+    public static void put(ResourceLocation effect, HostileEffectConfig config) {
         EFFECTS.put(effect, config);
     }
 
-    public static Map<MobEffect, HostileEffectConfig> getAll() {
+    public static Map<ResourceLocation, HostileEffectConfig> getAll() {
         return EFFECTS;
     }
 }

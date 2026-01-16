@@ -23,7 +23,7 @@ public class HostileWeaponLoader extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new Gson();
 
     public HostileWeaponLoader() {
-        super(GSON, "danshardermobs");
+        super(GSON, "weapons");
     }
 
     @Override
@@ -34,34 +34,42 @@ public class HostileWeaponLoader extends SimpleJsonResourceReloadListener {
     ) {
         HostileWeaponData.clear();
 
+        // default json
+        JsonElement defaultJson = objects.get(
+                ResourceLocation.fromNamespaceAndPath(danshardermobs.MODID, "default")
+        );
+
+        HostileWeaponVariantConfig defaults = defaultJson != null ? parseDefaults(defaultJson.getAsJsonObject()) : HostileWeaponVariantConfig.DEFAULT;
+        HostileWeaponData.setDefaults(defaults);
+
+        // <item>/*json
         for (var entry : objects.entrySet()) {
-            JsonObject root = entry.getValue().getAsJsonObject();
-            JsonObject weapons = root.getAsJsonObject("weapons");
-            if (weapons == null) continue;
+            ResourceLocation fileId = entry.getKey();
+            String path = fileId.getPath();
 
-            if (weapons.has("default")) {
-                HostileWeaponData.setDefaults(parseDefaults(weapons.getAsJsonObject("default")));
+            if (path.equals("default")) continue;
+
+            // <namespace>/<item>
+            int slash = path.indexOf('/');
+            if (slash <= 0) continue;
+
+            String itemNamespace = path.substring(0, slash);
+            String itemPath = path.substring(slash + 1);
+
+            ResourceLocation itemId = ResourceLocation.tryParse(itemNamespace + ":" + itemPath);
+
+            if (itemId == null) continue;
+
+            Item item = BuiltInRegistries.ITEM.get(itemId);
+            if (item == Items.AIR) {
+                danshardermobs.LOGGER.warn("Unknown weapon '{}'", itemId);
+                continue;
             }
 
-            for (var weaponEntry : weapons.entrySet()) {
-                if (weaponEntry.getKey().equals("default")) continue;
-
-                ResourceLocation id = ResourceLocation.tryParse(weaponEntry.getKey());
-                if (id == null) continue;
-
-                JsonObject obj = weaponEntry.getValue().getAsJsonObject();
-                HostileWeaponStackConfig config = parseWeaponEntry(obj, HostileWeaponData.defaults());
-
-                Item item = BuiltInRegistries.ITEM.get(id);
-                if (item == Items.AIR) {
-                    danshardermobs.LOGGER.warn("Unknown weapon '{}'", id);
-                    continue;
-                }
-
-
-                HostileWeaponData.put(item, config);
-            }
+            HostileWeaponStackConfig stack = parseWeaponFile(entry.getValue().getAsJsonObject(), defaults);
+            HostileWeaponData.put(item, stack);
         }
+
     }
 
     private HostileWeaponVariantConfig parseDefaults(JsonObject obj) {
@@ -79,19 +87,17 @@ public class HostileWeaponLoader extends SimpleJsonResourceReloadListener {
         );
     }
 
-    private HostileWeaponStackConfig parseWeaponEntry(JsonObject obj, HostileWeaponVariantConfig defaults) {
-        List<HostileWeaponVariantConfig> variants = new ArrayList<>();
+    private HostileWeaponStackConfig parseWeaponFile(JsonObject obj, HostileWeaponVariantConfig defaults) {
 
-        if (obj.has("variants")) {
-            JsonArray arr = obj.getAsJsonArray("variants");
-
-            for (JsonElement e : arr) {
-                variants.add(parseVariant(e.getAsJsonObject(), defaults));
-            }
-        } else {
-
-            // disable by omission
+        if (!obj.has("variants")) {
             return new HostileWeaponStackConfig(List.of());
+        }
+
+        List<HostileWeaponVariantConfig> variants = new ArrayList<>();
+        JsonArray arr = obj.getAsJsonArray("variants");
+
+        for (JsonElement e : arr) {
+            variants.add(parseVariant(e.getAsJsonObject(), defaults));
         }
 
         return new HostileWeaponStackConfig(variants);

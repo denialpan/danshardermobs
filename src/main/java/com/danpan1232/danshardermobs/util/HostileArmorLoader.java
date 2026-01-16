@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -25,7 +26,7 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new Gson();
 
     public HostileArmorLoader() {
-        super(GSON, "danshardermobs");
+        super(GSON, "armor");
     }
 
     @Override
@@ -37,36 +38,40 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
 
         HostileArmorData.clear();
 
+        // default json
+        JsonElement defaultJson = objects.get(
+                ResourceLocation.fromNamespaceAndPath(danshardermobs.MODID, "default")
+        );
+
+        HostileArmorVariantConfig defaults = defaultJson != null ? parseDefaults(defaultJson.getAsJsonObject()) : HostileArmorVariantConfig.DEFAULT;
+        HostileArmorData.setDefaults(defaults);
+
+        // <item>/*json
         for (var entry : objects.entrySet()) {
+            ResourceLocation fileId = entry.getKey();
+            String path = fileId.getPath();
 
-            JsonObject root = entry.getValue().getAsJsonObject();
-            JsonObject armor = root.getAsJsonObject("armor");
+            if (path.equals("default")) continue;
 
-            if (armor == null) continue;
+            // <namespace>/<item>
+            int slash = path.indexOf('/');
+            if (slash <= 0) continue;
 
-            if (armor.has("default")) {
-                HostileArmorData.setDefaults(parseDefaults(armor.getAsJsonObject("default")));
+            String itemNamespace = path.substring(0, slash);
+            String itemPath = path.substring(slash + 1);
+
+            ResourceLocation itemId = ResourceLocation.tryParse(itemNamespace + ":" + itemPath);
+
+            if (itemId == null) continue;
+
+            Item item = BuiltInRegistries.ITEM.get(itemId);
+            if (item == Items.AIR) {
+                danshardermobs.LOGGER.warn("Unknown armor '{}'", itemId);
+                continue;
             }
 
-            for (var armorEntry : armor.entrySet()) {
-
-                if (armorEntry.getKey().equals("default")) continue;
-
-                ResourceLocation id = ResourceLocation.tryParse(armorEntry.getKey());
-                if (id == null) continue;
-
-                JsonObject obj = armorEntry.getValue().getAsJsonObject();
-                HostileArmorStackConfig config = parseArmorEntry(obj, HostileArmorData.defaults());
-
-                Item item = BuiltInRegistries.ITEM.get(id);
-                if (item == Items.AIR) {
-                    danshardermobs.LOGGER.warn("Unknown armor '{}'", id);
-                    continue;
-                }
-
-                HostileArmorData.put(item, config);
-
-            }
+            HostileArmorStackConfig stack = parseArmorFile(entry.getValue().getAsJsonObject(), defaults);
+            HostileArmorData.put(item, stack);
 
         }
 
@@ -87,19 +92,17 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
         );
     }
 
-    private HostileArmorStackConfig parseArmorEntry(JsonObject obj, HostileArmorVariantConfig defaults) {
-        List<HostileArmorVariantConfig> variants = new ArrayList<>();
+    private HostileArmorStackConfig parseArmorFile(JsonObject obj, HostileArmorVariantConfig defaults) {
 
-        if (obj.has("variants")) {
-            JsonArray arr = obj.getAsJsonArray("variants");
-
-            for (JsonElement e : arr) {
-                variants.add(parseVariant(e.getAsJsonObject(), defaults));
-            }
-        } else {
-
-            // disable by omission
+        if (!obj.has("variants")) {
             return new HostileArmorStackConfig(List.of());
+        }
+
+        List<HostileArmorVariantConfig> variants = new ArrayList<>();
+        JsonArray arr = obj.getAsJsonArray("variants");
+
+        for (JsonElement e : arr) {
+            variants.add(parseVariant(e.getAsJsonObject(), defaults));
         }
 
         return new HostileArmorStackConfig(variants);

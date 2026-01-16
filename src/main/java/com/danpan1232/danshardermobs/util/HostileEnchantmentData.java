@@ -19,6 +19,10 @@ public final class HostileEnchantmentData {
         DEFAULT = cfg;
     }
 
+    public static HostileEnchantmentConfig defaults() {
+        return DEFAULT;
+    }
+
     public static void put(ResourceLocation id, HostileEnchantmentConfig cfg) {
         ENTRIES.put(id, cfg);
     }

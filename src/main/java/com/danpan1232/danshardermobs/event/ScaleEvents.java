@@ -5,7 +5,6 @@ import com.danpan1232.danshardermobs.danshardermobs;
 import com.danpan1232.danshardermobs.scale.ScaleFactor;
 import com.danpan1232.danshardermobs.util.*;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -24,12 +23,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -45,15 +42,19 @@ import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
 
 public final class ScaleEvents {
 
-    public static final String TAG_MOB_LEVEL = "level";
+    public static final String TAG_LEVEL = "level";
     public static final String TAG_SPAWNED_PREVIOUSLY = "spawnedpreviously";
 
     @SubscribeEvent
     public void onMobDamaged(LivingDamageEvent.Post event) {
-        if (!(event.getEntity() instanceof Monster mob)) return;
+
+        // check if on hostile list
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType());
+        if (!HostileEntityData.isHostile(id)) return;
+
         if (!(event.getSource().getEntity() instanceof Player)) return;
         if (event.getNewDamage() <= 0) return;
-        ScaleFactor.markFirstAggrovation(mob);
+        ScaleFactor.markFirstAggrovation((Mob) event.getEntity());
     }
 
     @SubscribeEvent
@@ -70,7 +71,10 @@ public final class ScaleEvents {
             danshardermobs.LOGGER.info("ender dragon death by {}", player);
         }
 
-        if (!(entity instanceof Monster mob)) return;
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        if (!HostileEntityData.isHostile(id)) return;
+
+        Mob mob = (Mob) entity;
         danshardermobs.LOGGER.info("mob die: {}, experience spawned: {}", mob);
 
         ScaleFactor.recordMobDeath(player, mob);
@@ -110,7 +114,7 @@ public final class ScaleEvents {
 
         HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
         CompoundTag tierTag = entity.getPersistentData();
-        int mobLevel = tierTag.getInt(TAG_MOB_LEVEL);
+        int mobLevel = tierTag.getInt(TAG_LEVEL);
 
         event.setDroppedExperience((int) (xp * mobLevel * hostileEntityConfig.xpRewardMultiplier()));
     }
@@ -147,10 +151,13 @@ public final class ScaleEvents {
         RandomSource random = mob.getRandom();
 
         // initial mob checks
-        // mob is hostile
+        // mob is hostile and not disabled
         ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
         if (!HostileEntityData.isHostile(id)) return;
+
         if (!(level instanceof ServerLevel serverLevel)) return;
+        HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
+        if (hostileEntityConfig.disabled()) return;
 
         int simulationDistance = serverLevel.getServer().getPlayerList().getSimulationDistance();
 
@@ -166,7 +173,6 @@ public final class ScaleEvents {
 
             AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
             if (maxHealth == null) return;
-            HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
             float bonusHP = playerLevel * hostileEntityConfig.healthScalingMultiplier();
             danshardermobs.LOGGER.info("health applied: {}", hostileEntityConfig.healthScalingMultiplier());
@@ -192,19 +198,29 @@ public final class ScaleEvents {
 
         if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
             for (var entry : HostileEffectData.getAll().entrySet()) {
-                MobEffect effect = entry.getKey();
-                HostileEffectConfig hostileEffectConfig = entry.getValue();
-                float roll = random.nextFloat();
-                danshardermobs.LOGGER.info("roll chance: {}, effect: {}", rollEffectChance * hostileEffectConfig.baseRollChance(), effect.getDescriptionId());
-                if (roll <= rollEffectChance * hostileEffectConfig.baseRollChance()) {
+                ResourceLocation effectId = entry.getKey();
+                HostileEffectConfig config = entry.getValue();
 
+                MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
+                if (effect == null) {
+                    danshardermobs.LOGGER.warn("Unknown mob effect {}", effectId);
+                    continue;
+                }
+
+                float roll = random.nextFloat();
+                float chance = rollEffectChance * config.baseRollChance();
+
+                danshardermobs.LOGGER.info("roll chance: {}, effect: {}, overall chance: {}", chance, effect.getDescriptionId(), chance);
+
+                if (roll <= chance) {
                     mob.addEffect(new MobEffectInstance(
-                            BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
-                            200,
-                            0,
-                            false,
-                            true
+                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
+                        200,
+                        0,
+                        false,
+                        true
                     ));
+                    danshardermobs.LOGGER.info("this ran and mob got effect");
                 }
             }
         }
@@ -321,7 +337,7 @@ public final class ScaleEvents {
 
         // mark that mob has been modified by this mod
         mobData.putBoolean(TAG_SPAWNED_PREVIOUSLY, true);
-        mobData.putInt(TAG_MOB_LEVEL, playerLevel);
+        mobData.putInt(TAG_LEVEL, playerLevel);
 
         danshardermobs.LOGGER.info("spawned hostile mob: {} with: {}hp", mob, mob.getMaxHealth());
     }

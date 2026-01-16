@@ -24,7 +24,7 @@ public final class ScaleFactor {
     // possible killstreak implementation
     private static final long KILL_WINDOW_MS = 6000;
 
-    private static final String TAG_MOD = "danshardermobs";
+    private static final String TAG_MOD = danshardermobs.MODID;
     private static final String TAG_COMBAT = "combat";
 
     private static final String TAG_KILLS = "kills";
@@ -118,6 +118,7 @@ public final class ScaleFactor {
 
         CompoundTag mobData = mob.getPersistentData();
         int mobLevel = mobData.getInt(TAG_LEVEL);
+        danshardermobs.LOGGER.info("moblevel: {}", mobLevel);
 
         double ratio = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL.get();
         int minClamp = -Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_FLAT.get();
@@ -153,8 +154,14 @@ public final class ScaleFactor {
 
     public static void refreshMobEffects(Mob mob) {
         for (var entry : HostileEffectData.getAll().entrySet()) {
+            ResourceLocation effectId = entry.getKey();
 
-            MobEffect effect = entry.getKey();
+            MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
+            if (effect == null) {
+                danshardermobs.LOGGER.warn("Unknown mob effect: {}", effectId);
+                continue;
+            }
+
             MobEffectInstance current = mob.getEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect));
 
             if (current != null && current.getDuration() <= 60) {
