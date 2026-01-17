@@ -194,9 +194,4 @@ public final class ScaleFactor {
 
     }
 
-    public static boolean isModded(Mob mob) {
-        var mobData = mob.getPersistentData();
-        return mobData.contains(TAG_MOD);
-    }
-
 }
