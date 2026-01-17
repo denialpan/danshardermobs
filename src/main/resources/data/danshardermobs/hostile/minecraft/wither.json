@@ -1,0 +1,5 @@
+{
+    "base_scaling_level_kill_reward": 2.0,
+    "health_scaling_multiplier": 1.5,
+    "is_boss": true
+}

@@ -166,11 +166,11 @@ public final class ScaleFactor {
 
             if (current != null && current.getDuration() <= 60) {
                 mob.addEffect(new MobEffectInstance(
-                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
-                        200,
-                        0,
-                        false,
-                        true
+                    BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
+                    200,
+                    0,
+                    false,
+                    true
                 ));
             }
         }
