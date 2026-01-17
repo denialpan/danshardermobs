@@ -227,8 +227,6 @@ public final class ScaleEvents {
 
         if (Config.DANSHARDERMOBS_MOB_WEAPONS.get()) {
 
-            ItemStack current = mob.getMainHandItem();
-
             HostileWeaponVariantConfig chosenVariant = null;
             Item chosenItem = null;
 
