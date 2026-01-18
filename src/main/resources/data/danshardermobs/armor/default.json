@@ -2,6 +2,7 @@
     "disabled": false,
     "base_roll_chance": 0.5,
     "drop_rate": 0.1,
+    "damage_percentage": 0.9,
     "enchantable": true,
     "mob_min_level": -1,
     "mob_max_level": -1,

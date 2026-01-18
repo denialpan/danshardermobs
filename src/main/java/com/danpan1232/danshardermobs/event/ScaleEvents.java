@@ -113,8 +113,12 @@ public final class ScaleEvents {
 
             // TODO: add damage property to item
             if (stack.isDamageableItem()) {
-                int minDamage = (int) (stack.getMaxDamage()
-                        * Config.DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE.get());
+
+                float damagePercentage = stack.getOrDefault(ModDataComponents.DAMAGE_PERCENT, 0.0f);
+
+                danshardermobs.LOGGER.info("damage percentage for {}: {}", stack, damagePercentage);
+
+                int minDamage = (int) (stack.getMaxDamage() * damagePercentage);
 
                 int damage = Mth.nextInt(
                         random,
@@ -124,12 +128,6 @@ public final class ScaleEvents {
 
                 stack.setDamageValue(damage);
             }
-
-//            // Configure vanilla equipment drop chance
-//            mob.setDropChance(
-//                    slot,
-//                    Config.DANSHARDERMOBS_MOB_DROP_RATE.get()
-//            );
         }
     }
 
@@ -309,6 +307,8 @@ public final class ScaleEvents {
 
                         ItemStack stack = new ItemStack(chosenItem);
 
+                        stack.set(ModDataComponents.DAMAGE_PERCENT, chosenVariant.damagePercentage());
+
                         // if enchantable
 
                         // TODO: add min max enchantment levels to config
@@ -371,6 +371,7 @@ public final class ScaleEvents {
 
                         ItemStack newStack = new ItemStack(item);
 
+                        newStack.set(ModDataComponents.DAMAGE_PERCENT, chosenVariant.damagePercentage());
                         mob.setItemSlot(slot, newStack);
 
                         mob.setDropChance(slot, chosenVariant.dropRate());
@@ -469,7 +470,7 @@ public final class ScaleEvents {
 
                         stack.enchant(enchantment, levelEnchantment);
 
-                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} to {}. min: {}, max: {}", enchId, levelEnchantment, minEnchantmentLevel, maxEnchantmentLevel);
+                        danshardermobs.LOGGER.info("gave enchantment {} lvl {} min: {}, max: {}", enchId, levelEnchantment, minEnchantmentLevel, maxEnchantmentLevel);
                     }
                 }
             }
