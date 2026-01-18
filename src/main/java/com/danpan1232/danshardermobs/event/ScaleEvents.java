@@ -15,20 +15,17 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -289,9 +286,9 @@ public final class ScaleEvents {
 
                     // TODO: refactor to percentages, instead of specific level
 
-                    int minimumLevel = weaponVariantConfig.mobMinLevel() == -1 ? -1 : weaponVariantConfig.mobMinLevel();
-                    int maximumlevel = weaponVariantConfig.mobMaxLevel() == -1 ? Integer.MAX_VALUE : weaponVariantConfig.mobMaxLevel();
-                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
+//                    int minimumLevel = weaponVariantConfig.playerLevelPercentMin() == -1 ? -1 : weaponVariantConfig.playerLevelPercentMin();
+//                    int maximumlevel = weaponVariantConfig.mobMaxLevel() == -1 ? Integer.MAX_VALUE : weaponVariantConfig.mobMaxLevel();
+//                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
 
                     float mobRoll = random.nextFloat();
                     float chance = playerChance * weaponVariantConfig.baseRollChance();
@@ -353,9 +350,9 @@ public final class ScaleEvents {
                     if (hostileArmorVariantConfig.disabled()) continue;
 
                     // TODO: refactor to percentages, instead of specific level
-                    int minimumLevel = hostileArmorVariantConfig.mobMinLevel() == -1 ? -1 : hostileArmorVariantConfig.mobMinLevel();
-                    int maximumlevel = hostileArmorVariantConfig.mobMaxLevel() == -1 ? Integer.MAX_VALUE : hostileArmorVariantConfig.mobMaxLevel();
-                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
+//                    int minimumLevel = hostileArmorVariantConfig.mobMinLevel() == -1 ? -1 : hostileArmorVariantConfig.mobMinLevel();
+//                    int maximumlevel = hostileArmorVariantConfig.playerLevelPercentMax() == -1 ? Integer.MAX_VALUE : hostileArmorVariantConfig.playerLevelPercentMax();
+//                    if (playerLevel < minimumLevel || playerLevel > maximumlevel) continue;
 
                     float roll = random.nextFloat();
                     float chance = playerChance * hostileArmorVariantConfig.baseRollChance();

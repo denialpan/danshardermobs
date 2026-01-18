@@ -10,7 +10,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -84,8 +83,8 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
             obj.has("drop_rate") ? obj.get("drop_rate").getAsFloat() : 0.1f,
             obj.has("damage_percentage") ? obj.get("damage_percentage").getAsFloat() : 0.9f,
             obj.has("enchantable") ? obj.get("enchantable").getAsBoolean() : true,
-            obj.has("mob_min_level") ? obj.get("mob_min_level").getAsInt() : -1,
-            obj.has("mob_max_level") ? obj.get("mob_max_level").getAsInt() : -1,
+            obj.has("player_level_percent_min") ? obj.get("player_level_percent_min").getAsFloat() : -1,
+            obj.has("player_level_percent_max") ? obj.get("player_level_percent_max").getAsFloat() : -1,
             obj.has("enchantment_min_level") ? obj.get("enchantment_min_level").getAsInt() : -1,
             obj.has("enchantment_max_level") ? obj.get("enchantment_max_level").getAsInt() : -1,
             obj.has("ignore_enchantment_compatibility") ? obj.get("ignore_enchantment_compatibility").getAsBoolean() : false,
@@ -117,8 +116,8 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
             obj.has("drop_rate") ? obj.get("drop_rate").getAsFloat() : defaults.dropRate(),
             obj.has("damage_percentage") ? obj.get("damage_percentage").getAsFloat() : defaults.damagePercentage(),
             obj.has("enchantable") ? obj.get("enchantable").getAsBoolean() : defaults.enchantable(),
-            obj.has("mob_min_level") ? obj.get("mob_min_level").getAsInt() : defaults.mobMinLevel(),
-            obj.has("mob_max_level") ? obj.get("mob_max_level").getAsInt() : defaults.mobMaxLevel(),
+            obj.has("player_level_percent_min") ? obj.get("player_level_percent_min").getAsFloat() : defaults.playerLevelPercentMin(),
+            obj.has("player_level_percent_max") ? obj.get("player_level_percent_max").getAsFloat() : defaults.playerLevelPercentMax(),
             obj.has("enchantment_min_level") ? obj.get("enchantment_min_level").getAsInt() : defaults.enchantmentMinLevel(),
             obj.has("enchantment_max_level") ? obj.get("enchantment_max_level").getAsInt() : defaults.enchantmentMaxLevel(),
             obj.has("ignore_enchantment_compatibility") ? obj.get("ignore_enchantment_compatibility").getAsBoolean() : defaults.ignoreEnchantmentCompatibility(),
