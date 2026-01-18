@@ -110,7 +110,7 @@ public final class ScaleFactor {
         // killed enderdragon
         if (ttkMs < 0) {
             HostileEntityConfig enderDragonConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON));
-            playerLevel *= (int) enderDragonConfig.baseScalingLevelKillReward();
+            playerLevel *= (int) enderDragonConfig.playerLevelScalingKillReward();
             danshardermobs.LOGGER.info("level increased to from enderdragon: {}", playerLevel);
             return Math.min(Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(),Math.max(0, playerLevel));
 
@@ -140,7 +140,7 @@ public final class ScaleFactor {
         if (Config.DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP.get() && hostileEntityConfig.isBoss()) {
             // mark impossible time as boss
             ttkMs = -1;
-            levelMultiplier *= hostileEntityConfig.baseScalingLevelKillReward();
+            levelMultiplier *= hostileEntityConfig.playerLevelScalingKillReward();
 
         }
 

@@ -1,11 +1,15 @@
 {
   "disabled": false,
-  "base_level": 1,
-  "max_health": -1,
-  "health_scaling_multiplier": 1.0,
-  "health_scaling_flat_max_gain": 50,
-  "level_cap": -1,
-  "base_scaling_level_kill_reward": 1.0,
-  "xp_reward_multiplier": 1.5,
-  "is_boss": false
+  "is_boss": false,
+  "player_level_percent_min": -1,
+  "player_level_percent_max": -1,
+  "player_level_scaling_kill_reward": 1.0,
+  "mob_min_health": -1,
+  "mob_max_health": -1,
+  "mob_health_scaling_multiplier": 1.0,
+  "mob_xp_reward_multiplier": 1.5,
+  "mob_can_have_armor": true,
+  "mob_can_have_weapons": true,
+  "mob_can_have_effects": true,
+  "mob_can_have_enchantments": true
 }

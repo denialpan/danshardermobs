@@ -58,6 +58,11 @@ public final class ScaleEvents {
     public static final String TAG_LEVEL = "mobLevel";
     public static final String TAG_SPAWNED_PREVIOUSLY = "spawnedpreviously";
 
+    // TODO: allow config to dictate global rates for armor, enchantment, weapon, effects
+    // TODO: for default.jsons, define default rates as -1, if not -1, then default to datapack values
+    // TODO: rename losing levels % to multiplier in config.java
+    // TODO: refactor mob_health_scaling_multiplier to mob_health_increments
+
     @SubscribeEvent
     public void onMobDamaged(LivingDamageEvent.Post event) {
 
@@ -136,7 +141,7 @@ public final class ScaleEvents {
         HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
         int mobLevel = entity.getPersistentData().getInt(TAG_LEVEL);
 
-        event.setDroppedExperience((int) (xp * mobLevel * hostileEntityConfig.xpRewardMultiplier()));
+        event.setDroppedExperience((int) (xp * mobLevel * hostileEntityConfig.mobXpRewardMultiplier()));
     }
 
     @SubscribeEvent
@@ -197,24 +202,28 @@ public final class ScaleEvents {
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
 
+            danshardermobs.LOGGER.info("health run");
+
+
             // health calculation: ((playerLevel * mob config health multiplier) + original mob health) clamped too mob config max
             // is mob is marked as a boss, then
 
             // TODO: come back to boss health calculation mechanics
             // TODO: add property of boss percent chance
             AttributeInstance maxHealth = mob.getAttribute(Attributes.MAX_HEALTH);
-            if (maxHealth == null) return;
+            if (maxHealth != null) {
 
-            float bonusHP = playerLevel * hostileEntityConfig.healthScalingMultiplier();
-            int maximumHealth = (int) (hostileEntityConfig.isBoss() ? (maxHealth.getBaseValue() + bonusHP) * hostileEntityConfig.healthScalingMultiplier() : maxHealth.getBaseValue());
+                float bonusHP = playerLevel * hostileEntityConfig.mobHealthScalingMultiplier();
+                int maximumHealth = (int) (hostileEntityConfig.isBoss() ? (maxHealth.getBaseValue() + bonusHP) * hostileEntityConfig.mobHealthScalingMultiplier() : maxHealth.getBaseValue());
 
-            int configMaximumHealth = hostileEntityConfig.maxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.maxHealth();
-            maximumHealth = (int) Math.min(configMaximumHealth, maximumHealth + bonusHP);
-            danshardermobs.LOGGER.info("health applied: {}", maximumHealth);
+                int configMaximumHealth = hostileEntityConfig.mobMaxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.mobMaxHealth();
+                maximumHealth = (int) Math.min(configMaximumHealth, maximumHealth + bonusHP);
+                danshardermobs.LOGGER.info("health applied: {}", maximumHealth);
 
-            maxHealth.setBaseValue(maximumHealth);
-            mob.setHealth(mob.getMaxHealth());
+                maxHealth.setBaseValue(maximumHealth);
+                mob.setHealth(mob.getMaxHealth());
 
+            }
         }
 
         // roll effect chance from player % of level cap
@@ -223,12 +232,15 @@ public final class ScaleEvents {
 
         if (Config.DANSHARDERMOBS_MOB_EFFECTS.get()) {
 
+            danshardermobs.LOGGER.info("effect run");
+
+
             for (var entry : HostileEffectData.getAll().entrySet()) {
 
                 // is disabled
                 ResourceLocation effectId = entry.getKey();
                 HostileEffectConfig hostileEffectConfig = entry.getValue();
-                if (hostileEffectConfig.disabled()) return;
+                if (hostileEffectConfig.disabled()) continue;
 
                 MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
 
@@ -240,10 +252,10 @@ public final class ScaleEvents {
                 float mobRoll = random.nextFloat();
                 float chance = playerChance * hostileEffectConfig.baseRollChance();
 
-                danshardermobs.LOGGER.info("roll chance: {}, effect: {}, overall chance: {}", chance, effect.getDescriptionId(), playerChance);
+                danshardermobs.LOGGER.info("mobRoll: {}, overall chance: {}", mobRoll, chance);
 
                 // roll chance
-                if (mobRoll > chance) return;
+                if (mobRoll > chance) continue;
                 mob.addEffect(new MobEffectInstance(
                     BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
                     200,
@@ -256,6 +268,9 @@ public final class ScaleEvents {
 
         // roll mob weapons from player % of level cap
         if (Config.DANSHARDERMOBS_MOB_WEAPONS.get()) {
+
+            danshardermobs.LOGGER.info("weapon run");
+
 
             HostileWeaponVariantConfig chosenVariant = null;
             Item chosenItem = null;
@@ -279,7 +294,7 @@ public final class ScaleEvents {
                     float mobRoll = random.nextFloat();
                     float chance = playerChance * weaponVariantConfig.baseRollChance();
 
-                    if (mobRoll > chance) return;
+                    if (mobRoll > chance) continue;
 
                     if (chosenVariant == null || weaponVariantConfig.tier() > chosenVariant.tier()) {
                         chosenVariant = weaponVariantConfig;
@@ -313,6 +328,8 @@ public final class ScaleEvents {
         }
 
         if (Config.DANSHARDERMOBS_MOB_ARMOR.get()) {
+
+            danshardermobs.LOGGER.info("armor run");
 
             // functionally identical to rolling weapons
             HostileArmorVariantConfig chosenVariant = null;

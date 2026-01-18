@@ -81,6 +81,7 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
         return new HostileArmorVariantConfig(
             obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
             obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : 0.5f,
+            obj.has("drop_rate") ? obj.get("drop_rate").getAsFloat() : 0.1f,
             obj.has("enchantable") ? obj.get("enchantable").getAsBoolean() : true,
             obj.has("mob_min_level") ? obj.get("mob_min_level").getAsInt() : -1,
             obj.has("mob_max_level") ? obj.get("mob_max_level").getAsInt() : -1,
@@ -112,6 +113,7 @@ public class HostileArmorLoader extends SimpleJsonResourceReloadListener {
         return new HostileArmorVariantConfig(
             obj.has("disabled") ? obj.get("disabled").getAsBoolean() : defaults.disabled(),
             obj.has("base_roll_chance") ? obj.get("base_roll_chance").getAsFloat() : defaults.baseRollChance(),
+            obj.has("drop_rate") ? obj.get("drop_rate").getAsFloat() : defaults.dropRate(),
             obj.has("enchantable") ? obj.get("enchantable").getAsBoolean() : defaults.enchantable(),
             obj.has("mob_min_level") ? obj.get("mob_min_level").getAsInt() : defaults.mobMinLevel(),
             obj.has("mob_max_level") ? obj.get("mob_max_level").getAsInt() : defaults.mobMaxLevel(),

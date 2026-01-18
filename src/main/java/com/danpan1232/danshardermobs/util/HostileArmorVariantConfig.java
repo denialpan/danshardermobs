@@ -8,6 +8,7 @@ import java.util.Set;
 public record HostileArmorVariantConfig(
         boolean disabled,
         float baseRollChance,
+        float dropRate,
         boolean enchantable,
         int mobMinLevel,
         int mobMaxLevel,
@@ -17,5 +18,5 @@ public record HostileArmorVariantConfig(
         Set<ResourceKey<Enchantment>> blacklistEnchantments,
         int tier
 ) {
-    public static final HostileArmorVariantConfig DEFAULT = new HostileArmorVariantConfig(false, 0.5f, true, -1, -1, -1, -1, false, Set.of(), 1);
+    public static final HostileArmorVariantConfig DEFAULT = new HostileArmorVariantConfig(false, 0.5f, 0.1F, true, -1, -1, -1, -1, false, Set.of(), 1);
 }

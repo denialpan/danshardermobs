@@ -14,7 +14,6 @@ public final class EvaluatePlayerLevel {
     private static final String TAG_VARIANCE = "variance";
     private static final String TAG_INITIALIZED = "initialized";
 
-
     // handles only level balancing on mob death
     // does not include player death
     public static int update(Player player, float ttkMs) {

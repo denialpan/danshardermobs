@@ -2,14 +2,12 @@ package com.danpan1232.danshardermobs.util;
 
 import com.danpan1232.danshardermobs.danshardermobs;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -68,28 +66,36 @@ public class HostileEntityLoader extends SimpleJsonResourceReloadListener {
     private static HostileEntityConfig parseDefaults(JsonObject obj) {
         return new HostileEntityConfig(
             obj.has("disabled") ? obj.get("disabled").getAsBoolean() : false,
-            obj.has("base_level") ? obj.get("base_level").getAsInt() : 1,
-            obj.has("max_health") ? obj.get("max_health").getAsInt() : -1,
-            obj.has("health_scaling_multiplier") ? obj.get("health_scaling_multiplier").getAsFloat() : 1.0F,
-            obj.has("health_scaling_flat_max_gain") ? obj.get("health_scaling_flat_max_gain").getAsInt() : 50,
-            obj.has("level_cap") ? obj.get("level_cap").getAsInt() : -1,
-            obj.has("base_scaling_level_kill_reward") ? obj.get("base_scaling_level_kill_reward").getAsFloat() : 1.0F,
-            obj.has("xp_reward_multiplier") ? obj.get("xp_reward_multiplier").getAsFloat() : 1.5F,
-            obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : false
+            obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : false,
+            obj.has("player_level_percent_min") ? obj.get("player_level_percent_min").getAsFloat() : -1F,
+            obj.has("player_level_percent_max") ? obj.get("player_level_percent_max").getAsFloat() : -1F,
+            obj.has("player_level_scaling_kill_reward") ? obj.get("player_level_scaling_kill_reward").getAsFloat() : 1F,
+            obj.has("mob_min_health") ? obj.get("mob_min_health").getAsInt() : -1,
+            obj.has("mob_max_health") ? obj.get("mob_max_health").getAsInt() : -1,
+            obj.has("mob_health_scaling_multiplier") ? obj.get("mob_health_scaling_multiplier").getAsFloat() : 1.0F,
+            obj.has("mob_xp_reward_multiplier") ? obj.get("mob_xp_reward_multiplier").getAsFloat() : 1.0F,
+            obj.has("mob_can_have_armor") ? obj.get("mob_can_have_armor").getAsBoolean() : false,
+            obj.has("mob_can_have_weapons") ? obj.get("mob_can_have_weapons").getAsBoolean() : false,
+            obj.has("mob_can_have_effects") ? obj.get("mob_can_have_effects").getAsBoolean() : false,
+            obj.has("mob_can_have_enchantments") ? obj.get("mob_can_have_enchantments").getAsBoolean() : false
         );
     }
 
     private static HostileEntityConfig parseConfig(JsonObject obj, HostileEntityConfig defaults) {
         return new HostileEntityConfig(
             obj.has("disabled") ? obj.get("disabled").getAsBoolean() : defaults.disabled(),
-            obj.has("base_level") ? obj.get("base_level").getAsInt() : defaults.baseLevel(),
-            obj.has("max_health") ? obj.get("max_health").getAsInt() : defaults.maxHealth(),
-            obj.has("health_scaling_multiplier") ? obj.get("health_scaling_multiplier").getAsFloat() : defaults.healthScalingMultiplier(),
-            obj.has("health_scaling_flat_max_gain") ? obj.get("health_scaling_flat_max_gain").getAsInt() : defaults.healthScalingFlatMaxGain(),
-            obj.has("level_cap") ? obj.get("level_cap").getAsInt() : defaults.levelCap(),
-            obj.has("base_scaling_level_kill_reward") ? obj.get("base_scaling_level_kill_reward").getAsFloat() : defaults.baseScalingLevelKillReward(),
-            obj.has("xp_reward_multiplier") ? obj.get("xp_reward_multiplier").getAsFloat() : defaults.xpRewardMultiplier(),
-            obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : defaults.isBoss()
+            obj.has("is_boss") ? obj.get("is_boss").getAsBoolean() : defaults.isBoss(),
+            obj.has("player_level_percent_min") ? obj.get("player_level_percent_min").getAsFloat() : defaults.playerLevelPercentMin(),
+            obj.has("player_level_percent_max") ? obj.get("player_level_percent_max").getAsFloat() : defaults.playerLevelPercentMax(),
+            obj.has("player_level_scaling_kill_reward") ? obj.get("player_level_scaling_kill_reward").getAsFloat() : defaults.playerLevelScalingKillReward(),
+            obj.has("mob_min_health") ? obj.get("mob_min_health").getAsInt() : defaults.mobMinHealth(),
+            obj.has("mob_max_health") ? obj.get("mob_max_health").getAsInt() : defaults.mobMaxHealth(),
+            obj.has("mob_health_scaling_multiplier") ? obj.get("mob_health_scaling_multiplier").getAsFloat() : defaults.mobHealthScalingMultiplier(),
+            obj.has("mob_xp_reward_multiplier") ? obj.get("mob_xp_reward_multiplier").getAsFloat() : defaults.mobXpRewardMultiplier(),
+            obj.has("mob_can_have_armor") ? obj.get("mob_can_have_armor").getAsBoolean() : defaults.mobCanHaveArmor(),
+            obj.has("mob_can_have_weapons") ? obj.get("mob_can_have_weapons").getAsBoolean() : defaults.mobCanHaveWeapons(),
+            obj.has("mob_can_have_effects") ? obj.get("mob_can_have_effects").getAsBoolean() : defaults.mobCanHaveEffects(),
+            obj.has("mob_can_have_enchantments") ? obj.get("mob_can_have_enchantments").getAsBoolean() : defaults.mobCanHaveEnchantments()
         );
     }
 
