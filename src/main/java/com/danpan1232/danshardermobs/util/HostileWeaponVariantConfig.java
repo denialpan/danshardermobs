@@ -8,6 +8,7 @@ import java.util.Set;
 public record HostileWeaponVariantConfig(
     boolean disabled,
     float baseRollChance,
+    float dropRate,
     boolean enchantable,
     int mobMinLevel,
     int mobMaxLevel,
@@ -18,6 +19,6 @@ public record HostileWeaponVariantConfig(
     int tier
 ) {
 
-    public static final HostileWeaponVariantConfig DEFAULT = new HostileWeaponVariantConfig(false, 0.5f, true, -1, -1, -1, -1, false, Set.of(), 1);
+    public static final HostileWeaponVariantConfig DEFAULT = new HostileWeaponVariantConfig(false, 0.5f, 0.1f, true, -1, -1, -1, -1, false, Set.of(), 1);
 
 }

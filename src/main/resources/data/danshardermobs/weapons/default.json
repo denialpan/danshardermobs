@@ -1,6 +1,7 @@
 {
   "disabled": false,
   "base_roll_chance": 1,
+  "drop_rate": 0.1,
   "enchantable": true,
   "mob_min_level": -1,
   "mob_max_level": -1,

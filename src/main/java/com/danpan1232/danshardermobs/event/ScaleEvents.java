@@ -105,27 +105,31 @@ public final class ScaleEvents {
         // roll drops and damage for equipment
         RandomSource random = mob.getRandom();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-
             ItemStack stack = mob.getItemBySlot(slot);
             if (stack.isEmpty()) continue;
 
-            // item damage
-            int damage = (int) (stack.getMaxDamage() * Config.DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE.get());
-            stack.setDamageValue(Mth.nextInt(random, damage, stack.getMaxDamage() - 1));
+            // Apply random damage
+            danshardermobs.LOGGER.info("attempting drop");
 
-            // drop chance
-            float chance = random.nextFloat();
-            if (chance > Config.DANSHARDERMOBS_MOB_DROP_RATE.get()) continue;
+            // TODO: add damage property to item
+            if (stack.isDamageableItem()) {
+                int minDamage = (int) (stack.getMaxDamage()
+                        * Config.DANSHARDERMOBS_MOB_DROP_MAX_DAMAGE_PERCENTAGE.get());
 
-            ItemEntity drop = new ItemEntity(
-                    mob.level(),
-                    mob.getX(), mob.getY(), mob.getZ(),
-                    stack.copy()
-            );
+                int damage = Mth.nextInt(
+                        random,
+                        minDamage,
+                        stack.getMaxDamage() - 1
+                );
 
-            mob.level().addFreshEntity(drop);
-            mob.setItemSlot(slot, ItemStack.EMPTY);
+                stack.setDamageValue(damage);
+            }
 
+//            // Configure vanilla equipment drop chance
+//            mob.setDropChance(
+//                    slot,
+//                    Config.DANSHARDERMOBS_MOB_DROP_RATE.get()
+//            );
         }
     }
 
@@ -313,7 +317,7 @@ public final class ScaleEvents {
                             rollEnchantments(mob, stack, chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel(), chosenVariant.blacklistEnchantments(), random, playerChance);
                         }
 
-                        mob.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
+                        mob.setDropChance(EquipmentSlot.MAINHAND, chosenVariant.dropRate());
                         mob.setItemSlot(EquipmentSlot.MAINHAND, stack);
                         // this may be overwritten by mob death event
                         // mob.setGuaranteedDrop(EquipmentSlot.MAINHAND);
@@ -369,7 +373,7 @@ public final class ScaleEvents {
 
                         mob.setItemSlot(slot, newStack);
 
-                        mob.setDropChance(slot, 0.0f);
+                        mob.setDropChance(slot, chosenVariant.dropRate());
 
                         danshardermobs.LOGGER.info(
                                 "Equipped {} with armor {} tier {} in slot {}",
