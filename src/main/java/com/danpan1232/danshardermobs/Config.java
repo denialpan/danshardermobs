@@ -75,7 +75,11 @@ public class Config {
                     "\n0: lose no levels, will make gameplay miserable as mobs will scale infinitely no matter what" +
                     "\n1: lose normal amount, limited to player scaling range" +
                     "\n2: twice as much etc")
-            .defineInRange("playerScaleRangeLoseLevels", 1.2, 0.0, Integer.MAX_VALUE);
+            .defineInRange("playerLoseLevelsMultiplier", 1.2, 0.0, Integer.MAX_VALUE);
+
+    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX = BUILDER
+            .comment("Maximum amount of player levels to lose when performing poorly. Clamps the losing multiplier")
+            .defineInRange("playerLoseLevelsClamp", 35, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL = BUILDER
             .comment("Threshold of mob level to current player level to count towards scaling.\n" +

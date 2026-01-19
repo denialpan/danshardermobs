@@ -13,13 +13,24 @@ public class ModDataComponents {
             .persistent((Codec.FLOAT))
             .build();
 
+    public static final DataComponentType<Float> DROP_RATE = DataComponentType.<Float>builder()
+            .persistent((Codec.FLOAT))
+            .build();
+
     public static void register(RegisterEvent event) {
         event.register(
-            Registries.DATA_COMPONENT_TYPE,
-            helper -> helper.register(
-                ResourceLocation.fromNamespaceAndPath(danshardermobs.MODID, "damage_percent"),
-                ModDataComponents.DAMAGE_PERCENT
-            )
+            Registries.DATA_COMPONENT_TYPE, helper ->
+            {
+                helper.register(
+                        ResourceLocation.fromNamespaceAndPath(danshardermobs.MODID, "damage_percent"),
+                        ModDataComponents.DAMAGE_PERCENT
+                );
+                helper.register(
+                        ResourceLocation.fromNamespaceAndPath(danshardermobs.MODID, "drop_rate"),
+                        ModDataComponents.DROP_RATE
+                );
+            }
+
         );
     }
 

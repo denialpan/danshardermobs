@@ -145,9 +145,17 @@ public final class ScaleFactor {
         }
 
         int value = EvaluatePlayerLevel.update(player, ttkMs);
+
+        if (value < 0) {
+            value = -Math.max(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), Math.abs(value));
+            playerLevel += value;
+        } else {
+            playerLevel += (int) (value * levelMultiplier);
+        }
+
         danshardermobs.LOGGER.info("level increased by: {}", value);
 
-        playerLevel += (int) (value * levelMultiplier);
+        playerLevel = Math.max(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), playerLevel);
 
         return Math.min(Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(),Math.max(0, playerLevel));
     }
