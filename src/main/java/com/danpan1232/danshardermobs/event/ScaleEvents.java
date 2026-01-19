@@ -256,10 +256,16 @@ public final class ScaleEvents {
 
                 // roll chance
                 if (mobRoll > chance) continue;
+
+                int effectMinLevel = hostileEntityConfig.mobEffectMinAmplifier() == -1 ? 1 : hostileEntityConfig.mobEffectMinAmplifier();
+                int effectMaxLevel = hostileEntityConfig.mobEffectMaxAmplifier() == -1 ? 3 : hostileEntityConfig.mobEffectMaxAmplifier();
+
+                int amplifier = Mth.nextInt(random, effectMinLevel, effectMaxLevel);
+
                 mob.addEffect(new MobEffectInstance(
                     BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
                     200,
-                    0,
+                        amplifier,
                     false,
                     true
                 ));

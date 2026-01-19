@@ -10,6 +10,8 @@ public record HostileEntityConfig(
         float playerLevelScalingKillReward,
         int mobMinHealth,
         int mobMaxHealth,
+        int mobEffectMinAmplifier,
+        int mobEffectMaxAmplifier,
         float mobHealthIncrements,
         float mobXpRewardMultiplier,
         boolean mobCanHaveArmor,
@@ -19,6 +21,6 @@ public record HostileEntityConfig(
 
 ) {
 
-    public static final HostileEntityConfig DEFAULT = new HostileEntityConfig(false, false, 0.01f, 2, -1F,-1F, 1F, -1,-1, 1, 1.5F, true, true, true, true);
+    public static final HostileEntityConfig DEFAULT = new HostileEntityConfig(false, false, 0.01f, 2, -1F,-1F, 1F, -1,-1, -1, -1,1, 1.5F, true, true, true, true);
 
 }

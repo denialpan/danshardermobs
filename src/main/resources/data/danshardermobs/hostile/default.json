@@ -8,6 +8,8 @@
   "player_level_scaling_kill_reward": 1.0,
   "mob_min_health": -1,
   "mob_max_health": -1,
+  "mob_effect_min_amplifier": -1,
+  "mob_effect_max_amplifier": -1,
   "mob_health_increments": 1.0,
   "mob_xp_reward_multiplier": 1.5,
   "mob_can_have_armor": true,
