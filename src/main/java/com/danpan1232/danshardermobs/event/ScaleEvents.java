@@ -405,6 +405,7 @@ public final class ScaleEvents {
 
         // mob level
         mobData.putInt(TAG_LEVEL, playerLevel);
+        mobData.putBoolean(danshardermobs.MODID, true);
 
         danshardermobs.LOGGER.info("spawned hostile mob: {} with: {}hp", mob, mob.getMaxHealth());
     }

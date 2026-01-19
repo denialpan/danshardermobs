@@ -171,14 +171,13 @@ public final class ScaleFactor {
             }
 
             MobEffectInstance current = mob.getEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect));
-
             if (current != null && current.getDuration() <= 60) {
                 mob.addEffect(new MobEffectInstance(
                     BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),
                     200,
-                    0,
-                    false,
-                    true
+                    current.getAmplifier(),
+                    current.isAmbient(),
+                    current.isVisible()
                 ));
             }
         }
