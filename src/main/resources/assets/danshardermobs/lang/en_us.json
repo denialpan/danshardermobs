@@ -19,19 +19,17 @@
 
   "danshardermobs.configuration.playerLevelCap": "Player level cap",
   "danshardermobs.configuration.playerScaleRange": "Player scaling range",
-  "danshardermobs.configuration.playerScaleRangeLoseLevels": "Player % lose levels",
-  "danshardermobs.configuration.playerLoseLevelsDeath": "Player % lose levels on death",
-  "danshardermobs.configuration.playerLoseLevelsDeathFlat": "Player flat lose levels on death",
 
+  "danshardermobs.configuration.playerLoseLevelsDeath": "Player % lose levels death",
+  "danshardermobs.configuration.playerLoseLevelsDeathCap": "Player lose levels death cap",
+  "danshardermobs.configuration.playerLoseLevelsMultiplier": "Player lose levels multiplier",
+  "danshardermobs.configuration.playerLoseLevelsCap": "Player lose levels cap",
   "danshardermobs.configuration.playerVsMobLevel": "Minimum % mob level to player",
-  "danshardermobs.configuration.playerVsMobLevelFlat": "Minimum flat mob level to player",
+  "danshardermobs.configuration.playerVsMobLevelCap": "Minimum mob level to player cap",
 
-  "danshardermobs.configuration.playerZClamp": "Player scaling effect",
-  "danshardermobs.configuration.playerZDeadzone": "Player scaling stagnation",
-  "danshardermobs.configuration.playerZBias": "Player bias scaling",
-
+  "danshardermobs.configuration.playerZClamp": "(advanced) Player scaling effect",
+  "danshardermobs.configuration.playerZBias": "(advanced) Player bias scaling",
   "danshardermobs.configuration.playerEWMA": "(advanced) EWMA Samples",
   "danshardermobs.configuration.playerVariance": "(advanced) Variance floor",
-  "danshardermobs.configuration.playerZScoreMultiplier": "(advanced) Z score multiplier",
   "danshardermobs.configuration.playerZCurveExponent": "(advanced) Z curve exponent"
 }

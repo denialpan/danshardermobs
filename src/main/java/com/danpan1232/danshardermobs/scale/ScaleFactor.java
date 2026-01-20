@@ -70,7 +70,7 @@ public final class ScaleFactor {
         int playerLevel = combatData.getInt(TAG_LEVEL);
         double ratio = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH.get();
         int percentCalculatedLoseLevels = (int) (playerLevel * ratio);
-        int loseLevelsClamp = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_FLAT.get();
+        int loseLevelsClamp = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_CAP.get();
         int loseLevels = Math.min(loseLevelsClamp, percentCalculatedLoseLevels);
 
         CompoundTag newCombatData = new CompoundTag();
@@ -125,11 +125,10 @@ public final class ScaleFactor {
         double ratio = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL.get();
 
         int percentCalculatedMinimumMobLevelRange = (int) (playerLevel * ratio);
-        int minimumMobLevelRangeClamp = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_FLAT.get();
+        int minimumMobLevelRangeClamp = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_CAP.get();
 
         int minimumMobLevelSubtractRange = Math.min(minimumMobLevelRangeClamp, percentCalculatedMinimumMobLevelRange);
         int requiredMobLevel = mobLevel - minimumMobLevelSubtractRange;
-
 
         danshardermobs.LOGGER.info("minimum mob level: {}", requiredMobLevel);
         danshardermobs.LOGGER.info("player level: {}", playerLevel);
@@ -153,7 +152,7 @@ public final class ScaleFactor {
         int value = EvaluatePlayerLevel.update(player, ttkMs);
 
         if (value < 0) {
-            value = -Math.min(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), Math.abs(value));
+            value = -Math.min(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_CAP.get(), Math.abs(value));
             playerLevel += value;
         } else {
             playerLevel += (int) (value * levelMultiplier);

@@ -54,11 +54,11 @@ public class Config {
                     "\n1: lose all levels")
             .defineInRange("playerLoseLevelsDeath", 0.20, 0.0, 1);
 
-    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_FLAT = BUILDER
+    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_CAP = BUILDER
             .comment("Maximum flat levels to lose. Clamps on the % levels lost upon death\n" +
                     "\n0: no levels lost" +
                     "\n1: lose all levels")
-            .defineInRange("playerLoseLevelsDeathFlat", 30, 0, Integer.MAX_VALUE);
+            .defineInRange("playerLoseLevelsDeathCap", 30, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MULTIPLIER = BUILDER
             .comment("Multiplier of player levels to lose when performing poorly.\n" +
@@ -67,21 +67,21 @@ public class Config {
                     "\n2: twice as much etc")
             .defineInRange("playerLoseLevelsMultiplier", 1.2, 0.0, Integer.MAX_VALUE);
 
-    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX = BUILDER
+    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_CAP = BUILDER
             .comment("Maximum amount of player levels to lose when performing poorly. Clamps the losing multiplier")
-            .defineInRange("playerLoseLevelsClamp", 35, 0, Integer.MAX_VALUE);
+            .defineInRange("playerLoseLevelsCap", 35, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL = BUILDER
             .comment("Threshold of mob level to current player level to count towards scaling.\n" +
                     "\n For example 0.3: for a mob to count towards scaling, its level must be at least greater than or within the player's current level - 30% the player's level.")
             .defineInRange("playerVsMobLevel", 0.3, 0, 1);
 
-    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_FLAT = BUILDER
+    public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_CAP = BUILDER
             .comment("Flat minimum mob level to current player level to count towards scaling. This flat calculation clamps % setting above.\n" +
                     "\n For example 50: for a mob to count towards scaling, its level must be at least greater than or within the player's current level - 50." +
                     "\n 0: must be exact level" +
                     "\n 100: mob can be 100 levels below player level to count")
-            .defineInRange("playerVsMobLevelFlat", 50, 0, Integer.MAX_VALUE);
+            .defineInRange("playerVsMobLevelCap", 50, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_CLAMP = BUILDER
             .comment("How sensitive player scaling overall. (This is the Z clamp in the Z-score formula).\n" +
@@ -123,7 +123,4 @@ public class Config {
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
-    }
 }
