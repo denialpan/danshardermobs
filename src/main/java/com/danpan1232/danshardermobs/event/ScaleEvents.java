@@ -4,7 +4,6 @@ import com.danpan1232.danshardermobs.Config;
 import com.danpan1232.danshardermobs.danshardermobs;
 import com.danpan1232.danshardermobs.scale.ScaleFactor;
 import com.danpan1232.danshardermobs.util.*;
-import com.ibm.icu.number.Scale;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -41,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
+import static com.danpan1232.danshardermobs.util.ModTags.*;
 
 /**
  * Event handler for mob and player events. Every function is gated to be server sided:
@@ -56,9 +56,6 @@ import static com.danpan1232.danshardermobs.scale.ScaleFactor.refreshMobEffects;
  * - on player death
  */
 public final class ScaleEvents {
-
-    public static final String TAG_LEVEL = "mob_level";
-    public static final String TAG_SPAWNED_PREVIOUSLY = "spawned_previously";
 
     @SubscribeEvent
     public void onMobDamaged(LivingDamageEvent.Post event) {
@@ -166,8 +163,8 @@ public final class ScaleEvents {
 
 //        ScaleFactor.recordPlayerDeath(player);
 
-        if (originalData.contains(danshardermobs.MODID)) {
-            newData.put(danshardermobs.MODID, originalData.getCompound(danshardermobs.MODID).copy());
+        if (originalData.contains(TAG_MOD)) {
+            newData.put(TAG_MOD, originalData.getCompound(TAG_MOD).copy());
         }
     }
 
@@ -178,7 +175,7 @@ public final class ScaleEvents {
         if (!(event.getEntity() instanceof Mob mob)) return;
 
         // if mob has been modified
-        boolean isModded = event.getEntity().getPersistentData().getBoolean(danshardermobs.MODID);
+        boolean isModded = event.getEntity().getPersistentData().getBoolean(TAG_MOD);
         if (isModded) {
             refreshMobEffects(mob);
         }
@@ -221,6 +218,11 @@ public final class ScaleEvents {
         float playerPercentProgression = (float) playerLevel / (float) Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
 
         danshardermobs.LOGGER.info("player level: {}, player level cap: {}, player percent progression: {}", playerLevel, Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(), playerPercentProgression);
+
+        float hostileMinPercent = hostileEntityConfig.playerLevelPercentMin() == -1 ? 0 : hostileEntityConfig.playerLevelPercentMin();
+        float hostileMaxPercent = hostileEntityConfig.playerLevelPercentMax() == -1 ? Float.MAX_VALUE : hostileEntityConfig.playerLevelPercentMax();
+
+        if (playerPercentProgression < hostileMinPercent || playerPercentProgression > hostileMaxPercent) return;
 
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
@@ -276,8 +278,6 @@ public final class ScaleEvents {
                 float mobRoll = random.nextFloat();
                 float chance = playerPercentProgression * hostileEffectConfig.baseRollChance();
 
-                danshardermobs.LOGGER.info("mobRoll: {}, overall chance: {}", mobRoll, chance);
-
                 // roll chance
                 if (mobRoll > chance) continue;
 
@@ -314,9 +314,10 @@ public final class ScaleEvents {
 
                     if (weaponVariantConfig.disabled()) continue;
 
-                    float minPercent = weaponVariantConfig.enchantmentMinLevel() == -1 ? -1 : weaponVariantConfig.playerLevelPercentMin();
-                    float maxPercent = weaponVariantConfig.enchantmentMaxLevel() == -1 ? Float.MAX_VALUE : weaponVariantConfig.playerLevelPercentMax();
-                    if (playerPercentProgression < minPercent || playerPercentProgression > maxPercent) continue;
+                    float weaponMinPercent = weaponVariantConfig.playerLevelPercentMin() == -1 ? 0 : weaponVariantConfig.playerLevelPercentMin();
+                    float weaponMaxPercent = weaponVariantConfig.playerLevelPercentMax() == -1 ? Float.MAX_VALUE : weaponVariantConfig.playerLevelPercentMax();
+
+                    if (playerPercentProgression < weaponMinPercent || playerPercentProgression > weaponMaxPercent) continue;
 
                     float mobRoll = random.nextFloat();
                     float chance = playerPercentProgression * weaponVariantConfig.baseRollChance();
@@ -375,9 +376,10 @@ public final class ScaleEvents {
 
                     if (variant.disabled()) continue;
 
-                    float minPercent = variant.enchantmentMinLevel() == -1 ? -1 : variant.playerLevelPercentMin();
-                    float maxPercent = variant.enchantmentMaxLevel() == -1 ? Float.MAX_VALUE : variant.playerLevelPercentMax();
-                    if (playerPercentProgression < minPercent || playerPercentProgression > maxPercent) continue;
+                    float armorMinPercent = variant.playerLevelPercentMin() == -1 ? 0 : variant.playerLevelPercentMin();
+                    float armorMaxPercent = variant.playerLevelPercentMax() == -1 ? Float.MAX_VALUE : variant.playerLevelPercentMax();
+
+                    if (playerPercentProgression < armorMinPercent || playerPercentProgression > armorMaxPercent) continue;
 
                     float roll = random.nextFloat();
                     float chance = playerPercentProgression * variant.baseRollChance();
@@ -428,7 +430,7 @@ public final class ScaleEvents {
 
         // mob level
         mobData.putInt(TAG_LEVEL, playerLevel);
-        mobData.putBoolean(danshardermobs.MODID, true);
+        mobData.putBoolean(TAG_MOD, true);
 
         danshardermobs.LOGGER.info("spawned hostile mob: {} with: {}hp", mob, mob.getMaxHealth());
     }
@@ -438,17 +440,6 @@ public final class ScaleEvents {
             HostileArmorVariantConfig variant
     ) {}
 
-    /**
-     * Roll enchantments for item
-     *
-     * @param mob
-     * @param stack
-     * @param minEnchantmentLevel
-     * @param maxEnchantmentLevel
-     * @param blacklistEnchantments
-     * @param random
-     * @param rollEffectChance
-     */
     private void rollEnchantments(Mob mob, ItemStack stack, int minEnchantmentLevel, int maxEnchantmentLevel, Set<ResourceKey<Enchantment>> blacklistEnchantments, RandomSource random, float rollEffectChance) {
 
         var enchantmentRegistry = mob.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);

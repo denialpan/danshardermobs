@@ -15,22 +15,21 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_KILLS;
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_KILLS_TIME;
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_LEVEL;
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_AGGRO;
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_COMBAT;
+import static com.danpan1232.danshardermobs.util.ModTags.TAG_MOD;
 
 public final class ScaleFactor {
+
 
     private ScaleFactor() {}
 
     // possible killstreak implementation
     private static final long KILL_WINDOW_MS = 6000;
 
-    private static final String TAG_MOD = danshardermobs.MODID;
-    private static final String TAG_COMBAT = "combat";
-
-    private static final String TAG_KILLS = "kills";
-    private static final String TAG_KILLS_TIME = "time";
-
-    private static final String TAG_AGGRO = "aggro";
-    private static final String TAG_LEVEL = "level";
 
     public static void recordKill(Player player, float ttkMs, Mob mob) {
 
