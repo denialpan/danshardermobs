@@ -4,6 +4,7 @@ import com.danpan1232.danshardermobs.Config;
 import com.danpan1232.danshardermobs.danshardermobs;
 import com.danpan1232.danshardermobs.scale.ScaleFactor;
 import com.danpan1232.danshardermobs.util.*;
+import com.ibm.icu.number.Scale;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,6 +33,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.EnumMap;
@@ -144,8 +146,28 @@ public final class ScaleEvents {
     public void onPlayerDeath(LivingDeathEvent event) {
 
         if (event.getEntity().level().isClientSide()) return;
-        if ((event.getEntity() instanceof Player player)) {
+        if (event.getEntity() instanceof Player player) {
             ScaleFactor.recordPlayerDeath(player);
+        }
+
+    }
+
+    // transfer current data to new player clone
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        if (event.getEntity().level().isClientSide()) return;
+        if (!event.isWasDeath()) return;
+
+        Player original = event.getOriginal();
+        Player player = event.getEntity();
+
+        CompoundTag originalData = original.getPersistentData();
+        CompoundTag newData = player.getPersistentData();
+
+//        ScaleFactor.recordPlayerDeath(player);
+
+        if (originalData.contains(danshardermobs.MODID)) {
+            newData.put(danshardermobs.MODID, originalData.getCompound(danshardermobs.MODID).copy());
         }
     }
 
@@ -196,7 +218,9 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         // roll effect chance from player % of level cap
         RandomSource random = mob.getRandom();
-        float playerPercentProgression = (float) playerLevel / Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
+        float playerPercentProgression = (float) playerLevel / (float) Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
+
+        danshardermobs.LOGGER.info("player level: {}, player level cap: {}, player percent progression: {}", playerLevel, Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(), playerPercentProgression);
 
         // set new health
         if (Config.DANSHARDERMOBS_MOB_SCALE_HEALTH.get()) {
@@ -215,7 +239,7 @@ public final class ScaleEvents {
                 }
 
                 // parse min/max clamps
-                float min = hostileEntityConfig.mobMinHealth() == -1 ? 0 : hostileEntityConfig.mobMinHealth();
+                float min = hostileEntityConfig.mobMinHealth() == -1 ? 1 : hostileEntityConfig.mobMinHealth();
                 float max = hostileEntityConfig.mobMaxHealth() == -1 ? Integer.MAX_VALUE : hostileEntityConfig.mobMaxHealth();
 
                 // clamp health min/max
@@ -260,7 +284,7 @@ public final class ScaleEvents {
                 int effectMinLevel = hostileEntityConfig.mobEffectMinAmplifier() == -1 ? 1 : hostileEntityConfig.mobEffectMinAmplifier();
                 int effectMaxLevel = hostileEntityConfig.mobEffectMaxAmplifier() == -1 ? 3 : hostileEntityConfig.mobEffectMaxAmplifier();
 
-                int amplifier = Mth.nextInt(random, effectMinLevel, effectMaxLevel);
+                int amplifier = (int) (Mth.nextInt(random, effectMinLevel, effectMaxLevel) * playerPercentProgression);
 
                 mob.addEffect(new MobEffectInstance(
                     BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect),

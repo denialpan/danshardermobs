@@ -5,5 +5,5 @@ public record HostileEffectConfig(
         float baseRollChance
 ) {
     public static final HostileEffectConfig DEFAULT =
-            new HostileEffectConfig(false,1.0F);
+            new HostileEffectConfig(false,0.25F);
 }

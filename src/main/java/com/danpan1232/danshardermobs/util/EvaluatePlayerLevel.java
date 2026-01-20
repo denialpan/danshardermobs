@@ -18,7 +18,7 @@ public final class EvaluatePlayerLevel {
     // does not include player death
     public static int update(Player player, float ttkMs) {
 
-        CompoundTag combatData = ScaleFactor.getCombatTag(player);
+        CompoundTag combatData = ScaleFactor.getCombatData(player);
 
         // quantize data to 500ms
         float ttk = ttkMs / 1000;

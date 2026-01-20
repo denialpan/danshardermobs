@@ -13,7 +13,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -35,7 +34,7 @@ public final class ScaleFactor {
 
     public static void recordKill(Player player, float ttkMs, Mob mob) {
 
-        CompoundTag combatData = getCombatTag(player);
+        CompoundTag combatData = getCombatData(player);
         CompoundTag killsData = combatData.getCompound(TAG_KILLS);
 
         ListTag list = killsData.getList(TAG_KILLS_TIME, Tag.TAG_LONG);
@@ -60,24 +59,27 @@ public final class ScaleFactor {
     }
 
     public static void recordPlayerDeath(Player player) {
-        danshardermobs.LOGGER.info("player death and combat reset: {}", player);
         var data = player.getPersistentData();
 
         // reset all stats except level
-        data.remove(TAG_COMBAT);
-        CompoundTag combatData = getCombatTag(player);
-        int playerLevel = combatData.getInt(TAG_LEVEL);
-        double ratio = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH.get();
+        CompoundTag combatData = getCombatData(player);
+        CompoundTag modData = data.getCompound(TAG_MOD);
+        modData.remove(TAG_COMBAT);
 
         // calculate new level from loss
-        int minimumLevelPercent = (int) Math.floor(playerLevel * (1.0f - ratio));
-        int minimumLevelFlat = Math.max(0, playerLevel - Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_FLAT.get());
-        int minimumAllowedLevel = Math.max(minimumLevelPercent, minimumLevelFlat);
-        minimumAllowedLevel = Math.max(0, minimumAllowedLevel);
+        int playerLevel = combatData.getInt(TAG_LEVEL);
+        double ratio = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH.get();
+        int percentCalculatedLoseLevels = (int) (playerLevel * ratio);
+        int loseLevelsClamp = Config.DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_FLAT.get();
+        int loseLevels = Math.min(loseLevelsClamp, percentCalculatedLoseLevels);
 
-        combatData.putInt(TAG_LEVEL, minimumAllowedLevel);
-        danshardermobs.LOGGER.info("player death and combat reset: {}, decreased level to: {}", player, minimumAllowedLevel);
+        CompoundTag newCombatData = new CompoundTag();
+        newCombatData.putInt(TAG_LEVEL, playerLevel - loseLevels);
+        modData.put(TAG_COMBAT, newCombatData);
+        data.put(TAG_MOD, modData);
+        danshardermobs.LOGGER.info("player death current level: {}, decreased level by: {}", playerLevel, loseLevels);
 
+        danshardermobs.LOGGER.info("data: {}", data);
     }
 
     public static void recordMobDeath(Player player, Mob mob) {
@@ -121,20 +123,24 @@ public final class ScaleFactor {
         danshardermobs.LOGGER.info("moblevel: {}", mobLevel);
 
         double ratio = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL.get();
-        int minClamp = -Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_FLAT.get();
 
-        int minimumMobLevel = Math.max((int) Math.round(playerLevel * (1.0f - ratio)), minClamp);
+        int percentCalculatedMinimumMobLevelRange = (int) (playerLevel * ratio);
+        int minimumMobLevelRangeClamp = Config.DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_FLAT.get();
 
-        danshardermobs.LOGGER.info("minimum mob level: {}", minimumMobLevel);
+        int minimumMobLevelSubtractRange = Math.min(minimumMobLevelRangeClamp, percentCalculatedMinimumMobLevelRange);
+        int requiredMobLevel = mobLevel - minimumMobLevelSubtractRange;
+
+
+        danshardermobs.LOGGER.info("minimum mob level: {}", requiredMobLevel);
         danshardermobs.LOGGER.info("player level: {}", playerLevel);
 
-        if (mobLevel < minimumMobLevel) {
+        if (mobLevel < requiredMobLevel) {
             danshardermobs.LOGGER.info("mob did not count");
 
             return playerLevel;
         }
-        HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
+        HostileEntityConfig hostileEntityConfig = HostileEntityData.get(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
 
         float levelMultiplier = 1;
         if (Config.DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP.get() && hostileEntityConfig.isBoss()) {
@@ -147,15 +153,15 @@ public final class ScaleFactor {
         int value = EvaluatePlayerLevel.update(player, ttkMs);
 
         if (value < 0) {
-            value = -Math.max(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), Math.abs(value));
+            value = -Math.min(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), Math.abs(value));
             playerLevel += value;
         } else {
             playerLevel += (int) (value * levelMultiplier);
         }
 
-        danshardermobs.LOGGER.info("level increased by: {}", value);
+//        playerLevel = Math.min(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), playerLevel);
 
-        playerLevel = Math.max(Config.DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MAX.get(), playerLevel);
+        danshardermobs.LOGGER.info("level increased by: {}", value);
 
         return Math.min(Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(),Math.max(0, playerLevel));
     }
@@ -185,11 +191,11 @@ public final class ScaleFactor {
 
     // util related nbt ahh things
     public static int getPlayerLevel(Player player) {
-        CompoundTag combatTag = getCombatTag(player);
-        return combatTag.getInt(TAG_LEVEL);
+        CompoundTag combatData = getCombatData(player);
+        return combatData.getInt(TAG_LEVEL);
     }
 
-    public static CompoundTag getCombatTag(Player player) {
+    public static CompoundTag getCombatData(Player player) {
 
         CompoundTag data = player.getPersistentData();
         CompoundTag modTag = data.getCompound(TAG_MOD);

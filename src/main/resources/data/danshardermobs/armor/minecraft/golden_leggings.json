@@ -1,12 +1,12 @@
 {
   "variants": [
     {
-      "base_roll_chance": 0.7,
+      "base_roll_chance": 0.6,
       "enchantable": false,
       "tier": 2
     },
     {
-      "base_roll_chance": 0.3,
+      "base_roll_chance": 0.2,
       "enchantable": true,
       "tier": 2
     }

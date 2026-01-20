@@ -1,6 +1,6 @@
 {
     "disabled": false,
-    "base_roll_chance": 0.5,
+    "base_roll_chance": 0.25,
     "drop_rate": 0.1,
     "damage_percentage": 0.9,
     "enchantable": true,
