@@ -10,23 +10,23 @@ public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_SCALE_HEALTH = BUILDER
-        .comment("Whether to scale mob health.")
+        .comment("Whether to modify mob health.")
         .define("mobScaleHealth", true);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_ARMOR = BUILDER
-            .comment("Whether to give mobs armor.")
+            .comment("Whether mobs can spawn with armor.")
             .define("mobArmor", true);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_EFFECTS = BUILDER
-            .comment("Whether to give mobs effects.")
+            .comment("Whether mobs can spawn with effects.")
             .define("mobEffects", true);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_WEAPONS = BUILDER
-            .comment("Whether to give mobs weapons.")
+            .comment("Whether mobs can spawn with weapons. This does not affect vanilla behavior.")
             .define("mobWeapons", true);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_ENCHANTMENTS = BUILDER
-            .comment("Whether to give enchantments to mob equipment.")
+            .comment("Whether mobs can spawn with enchanted equipment. This does not affect vanilla behavior.")
             .define("mobEnchantments", true);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_ILLEGAL_ENCHANTMENTS = BUILDER
@@ -44,71 +44,72 @@ public class Config {
             .defineInRange("playerLevelCap", 35, 5, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_SCALING_RANGE = BUILDER
-            .comment("Range of levels that a player can gain/lose.\n" +
-                    "\nExample: range of 10 is roughly 5 levels either gained/lost")
+            .comment("Range of levels that a player can gain/lose. This pairs in how quickly it is to reach the level cap" +
+                    "\nExample: range of 10 roughly nets 3 - 5 levels on leveling up through normal gameplay")
             .defineInRange("playerScaleRange", 5, 2, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH = BUILDER
-            .comment("Rough percentage of current player level number of levels to lose upon death.\n" +
+            .comment("Percent of current level amount of levels to lose on death.\n" +
                     "\n0: no levels lost" +
                     "\n1: lose all levels")
             .defineInRange("playerLoseLevelsDeath", 0.20, 0.0, 1);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_PERCENT_LOSE_LEVELS_DEATH_CAP = BUILDER
-            .comment("Maximum flat levels to lose. Clamps on the % levels lost upon death\n" +
+            .comment("Maximum amount of levels to lose on death. This effectively clamps the Player % lose levels death after its calculation.\n" +
                     "\n0: no levels lost" +
-                    "\n1: lose all levels")
+                    "\nInteger.MAX_VALUE: unclamped")
             .defineInRange("playerLoseLevelsDeathCap", 30, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_MULTIPLIER = BUILDER
-            .comment("Multiplier of player levels to lose when performing poorly.\n" +
+            .comment("Multiplier of towards the losing of levels. Often times the base losing level may be small, so a multiplier may help in decreasing larger levels.\n" +
                     "\n0: lose no levels, will make gameplay miserable as mobs will scale infinitely no matter what" +
                     "\n1: lose normal amount, limited to player scaling range" +
                     "\n2: twice as much etc")
-            .defineInRange("playerLoseLevelsMultiplier", 1.2, 0.0, Integer.MAX_VALUE);
+            .defineInRange("playerLoseLevelsMultiplier", 1.1, 0.0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_LOSE_LEVELS_CAP = BUILDER
-            .comment("Maximum amount of player levels to lose when performing poorly. Clamps the losing multiplier")
+            .comment("Maximum amount of levels to lose when scaling naturally.")
             .defineInRange("playerLoseLevelsCap", 35, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL = BUILDER
-            .comment("Threshold of mob level to current player level to count towards scaling.\n" +
+            .comment("Minimum % mob level to count towards scaling upon kill. This helps to mitigate farming low level thus weaker mobs to scale faster.\n" +
                     "\n For example 0.3: for a mob to count towards scaling, its level must be at least greater than or within the player's current level - 30% the player's level.")
             .defineInRange("playerVsMobLevel", 0.3, 0, 1);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_VS_MOB_LEVEL_CAP = BUILDER
-            .comment("Flat minimum mob level to current player level to count towards scaling. This flat calculation clamps % setting above.\n" +
+            .comment("Maximum amount of level difference that a mob can be below the player to count towards scaling upon kill.\n" +
                     "\n For example 50: for a mob to count towards scaling, its level must be at least greater than or within the player's current level - 50." +
                     "\n 0: must be exact level" +
-                    "\n 100: mob can be 100 levels below player level to count")
+                    "\n 100: mob can be 100 levels below player level to count" +
+                    "\n Integer.MAX_VALUE: unclamped, mob can be any level")
             .defineInRange("playerVsMobLevelCap", 50, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_CLAMP = BUILDER
-            .comment("How sensitive player scaling overall. (This is the Z clamp in the Z-score formula).\n" +
+            .comment("Clamps the strength of gaining/losing levels upon kills.\n" +
                     "\nLower: more sensitive" +
                     "\nHigher: less sensitive")
             .defineInRange("playerZClamp", 2.0, 1, 5);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_BIAS = BUILDER
-            .comment("Bias towards leveling up (Z bias in Z-score).\n" +
+            .comment("Shifts the central point of the scaling curve, either in favor of gaining/losing levels.\n" +
                     "\n0: no bias, equal chance to gain/lose levels" +
                     "\nHigher: more likely to level up, even with lower performance")
             .defineInRange("playerZBias", 0.40, 0.0, 2);
 
     public static final ModConfigSpec.IntValue DANSHARDERMOBS_PLAYER_EWMA_FACTOR = BUILDER
-            .comment("Number of samples (kills) to account for in scaling.\n" +
+            .comment("Number of recent datapoints to account for in determining the average scaling calculation.\n" +
                     "\nLower = abrupt changes in scaling" +
                     "\nHigher = smoother changes in scaling")
             .defineInRange("playerEWMA", 7, 5, 50);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_Z_CURVE_EXPONENT = BUILDER
-            .comment("Affects how strong leveling occurs to performance differences.\n" +
+            .comment("Sets the aggressiveness of scaling as player performance deviates. \n" +
                     "\n0.1: react strongly" +
                     "\n2: stable leveling, only detects massive outliers")
             .defineInRange("playerZCurveExponent", 0.85, 0.1, 2);
 
     public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_PLAYER_VARIANCE_FLOOR = BUILDER
-            .comment("Affects changes in leveling if recent performance has been consistent\n" +
+            .comment("Prevents scaling overreaction to outliers if recent performance has been consistent. \n" +
                     "\n0: sensitive abrupt scaling" +
                     "\n1: slow scaling from changes, may feel sluggish")
             .defineInRange("playerVariance", 0.25, 0, 1);
