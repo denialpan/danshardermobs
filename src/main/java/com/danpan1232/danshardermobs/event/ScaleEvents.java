@@ -338,7 +338,6 @@ public final class ScaleEvents {
                 newStack.set(ModDataComponents.DROP_RATE, chosenVariant.dropRate());
 
                 if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-                    danshardermobs.LOGGER.info("variant enchantment levels min: {} max: {}", chosenVariant.enchantmentMinLevel(), chosenVariant.enchantmentMaxLevel());
                     rollEnchantments(
                             mob,
                             newStack,
@@ -496,11 +495,7 @@ public final class ScaleEvents {
                     maxEnchantmentLevel = maxEnchantmentLevel == -1 ? enchantment.value().getMaxLevel() : maxEnchantmentLevel;
 
                     if (rollEnchantment <= chanceEnchantment) {
-                        int levelEnchantment = Mth.nextInt(
-                            random,
-                            minEnchantmentLevel,
-                            maxEnchantmentLevel
-                        );
+                        int levelEnchantment = (int) (Mth.nextInt(random, minEnchantmentLevel, maxEnchantmentLevel) * rollEffectChance);
 
                         stack.enchant(enchantment, levelEnchantment);
 

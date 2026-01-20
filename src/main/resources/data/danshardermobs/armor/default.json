@@ -1,14 +1,14 @@
 {
-    "disabled": false,
-    "base_roll_chance": 0.25,
-    "drop_rate": 0.1,
-    "damage_percentage": 0.9,
-    "enchantable": true,
-    "player_level_percent_min": -1,
-    "player_level_percent_max": -1,
-    "enchantment_min_level": -1,
-    "enchantment_max_level": -1,
-    "ignore_enchantment_compatibility": false,
-    "blacklist_enchantments": [],
-    "tier": 1
+  "disabled": false,
+  "base_roll_chance": 0.25,
+  "drop_rate": 0.1,
+  "damage_percentage": 0.9,
+  "enchantable": true,
+  "player_level_percent_min": -1,
+  "player_level_percent_max": -1,
+  "enchantment_min_level": -1,
+  "enchantment_max_level": -1,
+  "ignore_enchantment_compatibility": false,
+  "blacklist_enchantments": [],
+  "tier": 1
 }
