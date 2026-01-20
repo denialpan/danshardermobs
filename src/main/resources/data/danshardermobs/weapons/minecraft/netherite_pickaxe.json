@@ -1,0 +1,13 @@
+{
+  "variants": [
+    {
+      "tier": 6,
+      "base_roll_chance": 0.2
+    },
+    {
+      "tier": 6,
+      "enchantable": true,
+      "base_roll_chance": 0.0125
+    }
+  ]
+}
