@@ -1,4 +1,3 @@
-a mod to genuinely solve this [problem](https://www.reddit.com/r/feedthebeast/comments/1pdu3a4/looking_for_mods_that_add_hostile_mobs_that_are/)
 
 Installation information
 =======
