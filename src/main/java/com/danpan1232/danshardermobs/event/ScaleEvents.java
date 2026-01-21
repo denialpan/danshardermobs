@@ -236,7 +236,7 @@ public final class ScaleEvents {
 
                 // roll boss
                 float bossChance = random.nextFloat();
-                if (bossChance <= hostileEntityConfig.bossChance()) {
+                if (hostileEntityConfig.isBoss() && bossChance <= hostileEntityConfig.bossChance()) {
                     health *= hostileEntityConfig.bossHealthMultiplier();
                 }
 
