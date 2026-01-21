@@ -13,6 +13,9 @@
   "danshardermobs.configuration.mobWeapons": "Enable mob weapons",
   "danshardermobs.configuration.mobEnchantments": "Enable mob enchantments",
   "danshardermobs.configuration.mobIllegalEnchantments": "Enable mob illegal enchantments",
+  "danshardermobs.configuration.mobRandomlyWeakerChance": "Random % chance mob weaker",
+  "danshardermobs.configuration.mobRandomlyWeakerAmount": "Random % amount mob weaker",
+
   "danshardermobs.configuration.mobDropRate": "Mob equipment drop rate",
   "danshardermobs.configuration.mobDropDamagePercentage": "Mob equipment damage %",
   "danshardermobs.configuration.mobBossAlwaysLevelUp": "Enable always level up boss kill",

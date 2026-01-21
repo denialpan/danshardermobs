@@ -1,7 +1,5 @@
 package com.danpan1232.danshardermobs;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
@@ -34,6 +32,18 @@ public class Config {
                     "\n ON: Mobs can spawn with items can spawn crazily. For example, a chestplate can have sharpness, and a bow can have Infinity and Mending" +
                     "\n OFF: arguably not as fun. you should enable this haha")
             .define("mobIllegalEnchantments", false);
+
+    public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_CHANCE = BUILDER
+            .comment("Chance for mob to randomly spawn slightly weaker\n" +
+                    "\n0: no chance for mob to be weaker." +
+                    "\n1: 100% chance for mob to be weaker.")
+            .defineInRange("mobRandomlyWeakerChance", 0.4, 0, 1);
+
+    public static final ModConfigSpec.DoubleValue DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_AMOUNT = BUILDER
+            .comment("Ranged amount % weaker when mob spawns weaker\n" +
+                    "\n0: 0% weaker than normal." +
+                    "\n1: 100% weaker than normal. Basically no scaling.")
+            .defineInRange("mobRandomlyWeakerAmount", 0.2, 0, 1);
 
     public static final ModConfigSpec.BooleanValue DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP = BUILDER
             .comment("Whether to always level up on boss kills.")
