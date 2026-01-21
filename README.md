@@ -14,7 +14,6 @@ This mod is **intentionally vanilla style** and **WILL NOT** introduce new mob A
 | --- | --- |
 | 1.21.1 neoforge | Released 1/20/2026 |
 | 1.20.1 forge | Released 1/21/2026 |
-| Fabric? Other versions | not planned in the meantime, sorry |
 
 Current Features:
 - Vanilla player scaling based on player mob time-to-kill.
