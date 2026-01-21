@@ -53,12 +53,3 @@ With the intent of being lightweight, **no mod dependencies** are required for t
 
 ### Issues/Suggestions/Feedback
 As my first major mod, all of the above are welcome. Ideally, this mod should not conflict with mods, unless they harshly overwrite or interact with mob attributes. However, if there are issues or suggestions for the mod, feel free to issue them [here](https://github.com/denialpan/danshardermobs).
-
-### Discord instead for messaging issues/suggestions/feedback?
-Nah, probably not right now.
-
----
-
-### Basic showcase and such
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/o35uzC7Cz7I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
