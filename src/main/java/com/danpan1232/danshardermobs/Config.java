@@ -45,6 +45,18 @@ public class Config
                     "\n OFF: arguably not as fun. you should enable this haha")
             .define("mobIllegalEnchantments", false);
 
+    public static final ForgeConfigSpec.DoubleValue DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_CHANCE = BUILDER
+            .comment("Chance for mob to randomly spawn slightly weaker\n" +
+                    "\n0: no chance for mob to be weaker." +
+                    "\n1: 100% chance for mob to be weaker.")
+            .defineInRange("mobRandomlyWeakerChance", 0.4, 0, 1);
+
+    public static final ForgeConfigSpec.DoubleValue DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_AMOUNT = BUILDER
+            .comment("Ranged amount % weaker when mob spawns weaker\n" +
+                    "\n0: 0% weaker than normal." +
+                    "\n1: 100% weaker than normal. Basically no scaling.")
+            .defineInRange("mobRandomlyWeakerAmount", 0.2, 0, 1);
+
     public static final ForgeConfigSpec.BooleanValue DANSHARDERMOBS_MOB_BOSS_ALWAYS_LEVEL_UP = BUILDER
             .comment("Whether to always level up on boss kills.")
             .define("mobBossAlwaysLevelUp", true);

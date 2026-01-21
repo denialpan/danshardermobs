@@ -223,7 +223,17 @@ public final class ScaleEvents {
         if (playerLevel <= 0) return;
         // roll effect chance from player % of level cap
         RandomSource random = mob.getRandom();
-        float playerPercentProgression = (float) playerLevel / (float) Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get();
+
+        double weakerMultiplier;
+
+        if (random.nextFloat() < Config.DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_CHANCE.get()) {
+            weakerMultiplier = Mth.nextDouble(random, 1 - Config.DANSHARDERMOBS_MOB_RANDOMLY_WEAKER_AMOUNT.get(), 1);
+            danshardermobs.LOGGER.info("weaker %: {}", weakerMultiplier);
+        } else {
+            weakerMultiplier = 1;
+        }
+
+        float playerPercentProgression = (float) (((float) playerLevel / (float) Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get()) * weakerMultiplier);
 
         danshardermobs.LOGGER.info("player level: {}, player level cap: {}, player percent progression: {}", playerLevel, Config.DANSHARDERMOBS_PLAYER_LEVEL_CAP.get(), playerPercentProgression);
 
