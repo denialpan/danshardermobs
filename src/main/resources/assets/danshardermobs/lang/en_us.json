@@ -34,5 +34,7 @@
   "danshardermobs.configuration.playerZBias": "(advanced) Player bias scaling",
   "danshardermobs.configuration.playerEWMA": "(advanced) EWMA Samples",
   "danshardermobs.configuration.playerVariance": "(advanced) Variance floor",
-  "danshardermobs.configuration.playerZCurveExponent": "(advanced) Z curve exponent"
+  "danshardermobs.configuration.playerZCurveExponent": "(advanced) Z curve exponent",
+
+  "danshardermobs.configuration.debugText": "Debug console output"
 }
