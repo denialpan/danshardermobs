@@ -136,6 +136,11 @@ public class Config
                     "\n1: slow scaling from changes, may feel sluggish")
             .defineInRange("playerVariance", 0.25, 0, 1);
 
+    public static final ForgeConfigSpec.BooleanValue DANSHARDERMOBS_DEBUG = BUILDER
+            .comment("Debug text into console")
+            .define("debugText", false);
+
+
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 

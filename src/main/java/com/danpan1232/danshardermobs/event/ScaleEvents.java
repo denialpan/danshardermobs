@@ -35,6 +35,8 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -191,6 +193,8 @@ public final class ScaleEvents {
 
     @SubscribeEvent
     public void onMobJoinSpawn(EntityJoinLevelEvent event) {
+
+        applyDebuggingText();
 
         // given that this is the most important method, there are multiple checks put in line here, in order:
         // - must be server side function
@@ -539,5 +543,12 @@ public final class ScaleEvents {
                 }
             }
         }
+    }
+
+    public static void applyDebuggingText() {
+        Configurator.setLevel(
+                "com.danpan1232.danshardermobs",
+                Config.DANSHARDERMOBS_DEBUG.get() ? Level.INFO : Level.OFF
+        );
     }
 }
