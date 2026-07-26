@@ -106,8 +106,10 @@ public final class ScaleEvents {
             if (newStack.isEmpty()) continue;
 
             // item damage
-            int damage = (int) (newStack.getMaxDamage() * newStack.getOrDefault(ModDataComponents.DAMAGE_PERCENT, 0.0f));
-            newStack.setDamageValue(Mth.nextInt(random, damage, newStack.getMaxDamage() - 1));
+            if (newStack.isDamageableItem()) {
+                int damage = (int) (newStack.getMaxDamage() * newStack.getOrDefault(ModDataComponents.DAMAGE_PERCENT, 0.0f));
+                newStack.setDamageValue(Mth.nextInt(random, damage, newStack.getMaxDamage() - 1));
+            }
 
             // drop chance
             float chance = random.nextFloat();
@@ -316,58 +318,113 @@ public final class ScaleEvents {
 
             danshardermobs.LOGGER.info("weapon run");
 
-            HostileWeaponVariantConfig chosenVariant = null;
-            Item chosenItem = null;
+            ChosenWeapon chosenWeapon = null;
 
-            for (var entry : HostileWeaponData.getAll().entrySet()) {
-
-                Item item = entry.getKey();
-                HostileWeaponStackConfig weaponStackConfig = entry.getValue();
-
-                // item's variants
-                for (HostileWeaponVariantConfig weaponVariantConfig : weaponStackConfig.variants()) {
-
-                    if (weaponVariantConfig.disabled()) continue;
-
-                    float weaponMinPercent = weaponVariantConfig.playerLevelPercentMin() == -1 ? 0 : weaponVariantConfig.playerLevelPercentMin();
-                    float weaponMaxPercent = weaponVariantConfig.playerLevelPercentMax() == -1 ? Float.MAX_VALUE : weaponVariantConfig.playerLevelPercentMax();
-
-                    if (playerPercentProgression < weaponMinPercent || playerPercentProgression > weaponMaxPercent) continue;
+            if (TaczCompat.isLoaded()) {
+                TaczCompat.SupportConfiguredGun supportGun = TaczCompat.getGuardVillagersSupportGun(id, random);
+                if (supportGun != null) {
+                    HostileWeaponVariantConfig variant = new HostileWeaponVariantConfig(
+                            false,
+                            supportGun.spawnChance(),
+                            supportGun.dropChance(),
+                            0.0f,
+                            false,
+                            -1,
+                            -1,
+                            -1,
+                            -1,
+                            false,
+                            Set.of(),
+                            HostileWeaponData.defaults().tier()
+                    );
 
                     float mobRoll = random.nextFloat();
-                    float chance = playerPercentProgression * weaponVariantConfig.baseRollChance();
+                    float chance = playerPercentProgression * variant.baseRollChance();
+                    danshardermobs.LOGGER.info(
+                            "guardvillagerstaczsupport TACZ roll for {} gun {}: roll={}, chance={} (playerPercentProgression={}, baseRollChance={}, dropRate={})",
+                            id,
+                            supportGun.gunId(),
+                            mobRoll,
+                            chance,
+                            playerPercentProgression,
+                            variant.baseRollChance(),
+                            variant.dropRate()
+                    );
 
-                    if (mobRoll > chance) continue;
-
-                    if (chosenVariant == null || weaponVariantConfig.tier() > chosenVariant.tier()) {
-                        chosenVariant = weaponVariantConfig;
-                        chosenItem = item;
+                    if (mobRoll <= chance) {
+                        chosenWeapon = chooseHigherTierWeapon(chosenWeapon, new ChosenWeapon(null, supportGun.gunId(), variant));
+                        danshardermobs.LOGGER.info(
+                                "guardvillagerstaczsupport TACZ weapon candidate accepted for {}: {}",
+                                id,
+                                supportGun.gunId()
+                        );
                     }
-
                 }
             }
 
-            if (chosenItem != null && chosenVariant != null) {
+            if (chosenWeapon == null) {
+                for (var entry : HostileWeaponData.getAll().entrySet()) {
 
-                ItemStack newStack = new ItemStack(chosenItem);
-                newStack.set(ModDataComponents.DAMAGE_PERCENT, chosenVariant.damagePercentage());
-                newStack.set(ModDataComponents.DROP_RATE, chosenVariant.dropRate());
+                    Item item = entry.getKey();
+                    HostileWeaponStackConfig weaponStackConfig = entry.getValue();
 
-                if (Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
-                    rollEnchantments(
-                            mob,
-                            newStack,
-                            chosenVariant.enchantmentMinLevel(),
-                            chosenVariant.enchantmentMaxLevel(),
-                            chosenVariant.blacklistEnchantments(),
-                            random,
-                            playerPercentProgression);
+                    // item's variants
+                    for (HostileWeaponVariantConfig weaponVariantConfig : weaponStackConfig.variants()) {
+
+                        if (weaponVariantConfig.disabled()) continue;
+
+                        float weaponMinPercent = weaponVariantConfig.playerLevelPercentMin() == -1 ? 0 : weaponVariantConfig.playerLevelPercentMin();
+                        float weaponMaxPercent = weaponVariantConfig.playerLevelPercentMax() == -1 ? Float.MAX_VALUE : weaponVariantConfig.playerLevelPercentMax();
+
+                        if (playerPercentProgression < weaponMinPercent || playerPercentProgression > weaponMaxPercent) continue;
+
+                        float mobRoll = random.nextFloat();
+                        float chance = playerPercentProgression * weaponVariantConfig.baseRollChance();
+
+                        if (mobRoll > chance) continue;
+
+                        chosenWeapon = chooseHigherTierWeapon(chosenWeapon, new ChosenWeapon(item, null, weaponVariantConfig));
+
+                    }
                 }
+            }
 
-                mob.setDropChance(EquipmentSlot.MAINHAND, 0);
-                mob.setItemSlot(EquipmentSlot.MAINHAND, newStack);
+            if (chosenWeapon != null) {
 
-                danshardermobs.LOGGER.info("equipped mob {} with tier {} weapon {}", mob.getType().toShortString(), chosenVariant.tier(), BuiltInRegistries.ITEM.getKey(chosenItem));
+                HostileWeaponVariantConfig chosenVariant = chosenWeapon.variant();
+                ItemStack newStack = chosenWeapon.item() != null
+                        ? new ItemStack(chosenWeapon.item())
+                        : TaczCompat.createGunStack(chosenWeapon.taczGunId(), mob.registryAccess());
+
+                if (newStack.isEmpty()) {
+                    danshardermobs.LOGGER.warn("Skipped empty weapon stack for mob {}", mob.getType().toShortString());
+                } else {
+                    newStack.set(ModDataComponents.DAMAGE_PERCENT, chosenVariant.damagePercentage());
+                    newStack.set(ModDataComponents.DROP_RATE, chosenVariant.dropRate());
+
+                    if (chosenWeapon.item() != null && Config.DANSHARDERMOBS_MOB_ENCHANTMENTS.get() && chosenVariant.enchantable()) {
+                        rollEnchantments(
+                                mob,
+                                newStack,
+                                chosenVariant.enchantmentMinLevel(),
+                                chosenVariant.enchantmentMaxLevel(),
+                                chosenVariant.blacklistEnchantments(),
+                                random,
+                                playerPercentProgression);
+                    }
+
+                    mob.setDropChance(EquipmentSlot.MAINHAND, 0);
+                    mob.setItemSlot(EquipmentSlot.MAINHAND, newStack);
+
+                    danshardermobs.LOGGER.info("equipped mob {} with tier {} weapon {}", mob.getType().toShortString(), chosenVariant.tier(), chosenWeapon.id());
+                    if (chosenWeapon.taczGunId() != null) {
+                        danshardermobs.LOGGER.info(
+                                "spawned {} with guardvillagerstaczsupport TACZ weapon {}",
+                                mob.getType().toShortString(),
+                                chosenWeapon.taczGunId()
+                        );
+                    }
+                }
 
             }
         }
@@ -454,6 +511,24 @@ public final class ScaleEvents {
             Item item,
             HostileArmorVariantConfig variant
     ) {}
+
+    private record ChosenWeapon(
+            Item item,
+            ResourceLocation taczGunId,
+            HostileWeaponVariantConfig variant
+    ) {
+        private ResourceLocation id() {
+            return item != null ? BuiltInRegistries.ITEM.getKey(item) : taczGunId;
+        }
+    }
+
+    private ChosenWeapon chooseHigherTierWeapon(ChosenWeapon current, ChosenWeapon candidate) {
+        if (current == null || candidate.variant().tier() > current.variant().tier()) {
+            return candidate;
+        }
+
+        return current;
+    }
 
     private void rollEnchantments(Mob mob, ItemStack stack, int minEnchantmentLevel, int maxEnchantmentLevel, Set<ResourceKey<Enchantment>> blacklistEnchantments, RandomSource random, float rollEffectChance) {
 
